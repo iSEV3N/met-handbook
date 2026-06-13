@@ -2,10 +2,10 @@
   "name": "Aviation MET Handbook",
   "short_name": "MET Handbook",
   "description": "Aviation Meteorology Reference for Flight Dispatcher, Met Officer & Pilot",
-  "start_url": "/met-handbook/",
+  "start_url": "/K-Mile-Apps/MET-Handbook/",
   "display": "standalone",
-  "background_color": "#07090f",
-  "theme_color": "#07090f",
+  "background_color": "#04111f",
+  "theme_color": "#04111f",
   "orientation": "any",
   "icons": [
     {

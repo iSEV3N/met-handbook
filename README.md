@@ -5,7 +5,7 @@
 ## Features
 - 17 หัวข้อครบสมบูรณ์ตาม ICAO Annex 3 / Doc 8896
 - รองรับมือถือและ Tablet (Responsive Design)
-- Cockpit Dark Theme
+- Weather Sky Theme
 - ใช้งาน Offline ได้ (PWA / Service Worker)
 - Add to Home Screen บน iOS/Android
 
@@ -37,4 +37,4 @@
 - Thai Aeronautical Meteorology Division
 
 ## Live App
-https://isev3n.github.io/met-handbook/
+https://isev3n.github.io/K-Mile-Apps/MET-Handbook/

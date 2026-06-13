@@ -1,5 +1,6 @@
 const CACHE = 'met-handbook-v1';
-const ASSETS = ['/', '/index.html', '/manifest.json'];
+const BASE = '/K-Mile-Apps/MET-Handbook/';
+const ASSETS = [BASE, BASE+'index.html', BASE+'manifest.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(
