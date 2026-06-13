@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0a0e1a">
+<title>Aviation MET Handbook</title>
+<meta name="theme-color" content="#07090f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────── */
+:root{
+  /* Cockpit Dark palette */
+  --void:#07090f;
+  --panel:#0d1120;
+  --surface:#121828;
+  --lift:#1a2540;
+  --rim:#1e2d4a;
+  --line:rgba(79,175,240,0.14);
+  --line2:rgba(79,175,240,0.28);
+
+  /* Accent system */
+  --sky:#4faff0;      /* primary blue */
+  --sky2:#7dcfff;     /* light blue */
+  --green:#2ec98a;    /* OK / safe */
+  --amber:#f5a623;    /* caution */
+  --red:#e85454;      /* danger */
+  --red2:#ff7070;
+  --purple:#9b7fe8;   /* info alt */
+
+  /* Text */
+  --t1:#ddeeff;
+  --t2:#8ab4d4;
+  --t3:#3d6080;
+  --t4:#1e3050;
+
+  /* Radii */
+  --r1:12px;--r2:8px;--r3:5px;
+
+  /* Fonts */
+  --fn:'IBM Plex Sans Thai',sans-serif;
+  --fm:'IBM Plex Mono',monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--void);
+  color:var(--t1);
+  font-family:var(--fn);
+  font-size:15px;
+  line-height:1.75;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+/* ── RESPONSIVE FONT SCALING ── */
+@media(min-width:600px){
+  body{font-size:16px}
+  .sec-title{font-size:22px!important}
+  .tbl{font-size:13px!important}
+  .tbl th{font-size:10.5px!important}
+  .sh{font-size:13px!important}
+  .al{font-size:13px!important}
+  .hl{font-size:13px!important}
+  .bt{font-size:14px!important}
+  .mono{font-size:12.5px!important}
+  .item{font-size:14px!important}
+  .sb{font-size:13px!important}
+  .mc-t{font-size:13px!important}
+  .mc-d{font-size:12px!important}
+  .sym-t{font-size:12.5px!important}
+  .sym-d{font-size:11.5px!important}
+}
+@media(max-width:400px){
+  body{font-size:14px}
+  .sec-title{font-size:17px!important}
+  .tbl{font-size:11px!important}
+  .tbl th{font-size:9px!important}
+  .tag{font-size:10px!important;padding:1px 6px!important}
+}
+
+/* ── HEADER ──────────────────────────────── */
+.hdr{
+  background:linear-gradient(180deg,var(--panel) 0%,rgba(13,17,32,0.96) 100%);
+  border-bottom:1px solid var(--line2);
+  padding:14px 16px 12px;
+  position:sticky;top:0;z-index:200;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.hdr-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.hdr-badge{
+  background:linear-gradient(135deg,var(--sky),#2a8fd4);
+  color:#fff;border-radius:6px;
+  padding:4px 10px;font-size:10px;
+  font-family:var(--fm);letter-spacing:1.5px;
+  text-transform:uppercase;flex-shrink:0;
+  box-shadow:0 0 16px rgba(79,175,240,0.25);
+}
+.hdr h1{font-size:16px;font-weight:600;line-height:1.2}
+.hdr h1 em{color:var(--sky);font-style:normal}
+.hdr-meta{display:flex;flex-wrap:wrap;gap:10px}
+.hm{font-size:10.5px;color:var(--t3);display:flex;align-items:center;gap:4px}
+.hm::before{content:'›';color:var(--sky);font-weight:600}
+
+/* radar pulse animation on badge */
+@keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(79,175,240,0.3)}50%{box-shadow:0 0 20px rgba(79,175,240,0.55)}}
+.hdr-badge{animation:pulse 3s ease-in-out infinite}
+
+/* ── BOTTOM NAV (mobile) ──────────────────── */
+.bnav{
+  display:none;position:fixed;bottom:0;left:0;right:0;
+  background:linear-gradient(0deg,var(--panel) 80%,rgba(13,17,32,0.9));
+  border-top:1px solid var(--line2);
+  padding:8px 10px 12px;
+  z-index:199;overflow-x:auto;scrollbar-width:none;
+  gap:5px;
+}
+.bnav::-webkit-scrollbar{display:none}
+@media(max-width:680px){.bnav{display:flex}}
+.bb{
+  flex-shrink:0;padding:6px 10px;border-radius:20px;
+  border:1px solid var(--line2);background:transparent;
+  color:var(--t3);font-size:10.5px;cursor:pointer;
+  font-family:var(--fm);white-space:nowrap;transition:.15s;
+}
+.bb:hover{color:var(--sky);border-color:rgba(79,175,240,0.4)}
+.bb.on{background:rgba(79,175,240,0.16);color:var(--sky2);border-color:var(--sky)}
+
+/* ── LAYOUT ───────────────────────────────── */
+.layout{display:flex;max-width:960px;margin:0 auto;padding-bottom:72px}
+.sidebar{
+  width:210px;flex-shrink:0;
+  padding:16px 10px;
+  position:sticky;top:68px;
+  height:calc(100vh - 68px);
+  overflow-y:auto;scrollbar-width:thin;
+  scrollbar-color:var(--lift) transparent;
+}
+@media(max-width:680px){.sidebar{display:none}}
+.main{flex:1;padding:14px;min-width:0}
+
+/* ── SIDEBAR ─────────────────────────────── */
+.snav-hd{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--t3);margin-bottom:10px;padding:0 6px;
+  font-family:var(--fm);
+}
+.snav-btn{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 8px;border-radius:var(--r3);
+  cursor:pointer;width:100%;border:none;
+  background:transparent;text-align:left;
+  color:var(--t2);font-family:var(--fn);font-size:12px;
+  transition:.15s;line-height:1.3;
+}
+.snav-btn:hover{background:var(--lift);color:var(--t1)}
+.snav-btn.on{
+  background:linear-gradient(135deg,rgba(79,175,240,0.15),rgba(79,175,240,0.06));
+  color:var(--sky2);
+  border-left:2px solid var(--sky);
+  padding-left:6px;
+}
+.snav-num{
+  width:22px;height:22px;border-radius:4px;
+  background:var(--lift);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-family:var(--fm);
+  color:var(--t3);flex-shrink:0;
+  border:1px solid var(--rim);
+}
+.snav-btn.on .snav-num{
+  background:rgba(79,175,240,0.2);
+  color:var(--sky);border-color:var(--sky);
+}
+
+/* ── PRIORITY CARD ─────────────────────────── */
+.pcard{
+  background:var(--panel);
+  border:1px solid var(--line2);
+  border-radius:var(--r1);
+  padding:16px;margin-bottom:14px;
+  position:relative;overflow:hidden;
+}
+.pcard::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--sky),var(--green),var(--amber),var(--red));
+}
+.pcard-title{
+  font-size:11px;font-weight:600;color:var(--sky);
+  letter-spacing:1.2px;text-transform:uppercase;
+  font-family:var(--fm);margin-bottom:12px;
+}
+.pri{display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.pri:last-child{border-bottom:none}
+.pri-n{
+  width:22px;height:22px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:600;flex-shrink:0;margin-top:2px;
+  font-family:var(--fm);
+}
+.p1{background:rgba(232,84,84,0.2);color:var(--red2);border:1px solid rgba(232,84,84,0.3)}
+.p2{background:rgba(245,166,35,0.2);color:var(--amber);border:1px solid rgba(245,166,35,0.3)}
+.p3{background:rgba(79,175,240,0.2);color:var(--sky);border:1px solid rgba(79,175,240,0.3)}
+.p4{background:rgba(46,201,138,0.2);color:var(--green);border:1px solid rgba(46,201,138,0.3)}
+.p5{background:rgba(61,96,128,0.2);color:var(--t2);border:1px solid var(--line)}
+.pri-t{font-size:13px;font-weight:500;color:var(--t1)}
+.pri-s{font-size:11px;color:var(--t3);margin-top:1px}
+
+/* ── SECTIONS ─────────────────────────────── */
+.sec{display:none}.sec.on{display:block}
+
+.sec-hdr{
+  background:var(--panel);
+  border:1px solid var(--line2);
+  border-radius:var(--r1);
+  padding:16px;margin-bottom:12px;
+  position:relative;overflow:hidden;
+}
+.sec-hdr::after{
+  content:'';position:absolute;
+  bottom:0;left:16px;right:16px;height:1px;
+  background:linear-gradient(90deg,var(--sky),transparent);
+}
+.sec-num{
+  font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--sky);
+  margin-bottom:5px;font-family:var(--fm);
+  display:flex;align-items:center;gap:6px;
+}
+.sec-num::before{
+  content:'';width:16px;height:1px;
+  background:var(--sky);display:block;
+}
+.sec-title{font-size:20px;font-weight:600;margin-bottom:5px;line-height:1.2}
+.sec-desc{font-size:13px;color:var(--t2);line-height:1.65}
+
+.sec-body{
+  background:var(--panel);
+  border:1px solid var(--line2);
+  border-radius:var(--r1);
+  padding:16px;margin-bottom:12px;
+}
+
+/* ── TYPOGRAPHY ─────────────────────────── */
+.sh{
+  font-size:12px;font-weight:600;color:var(--sky2);
+  margin:16px 0 10px;
+  display:flex;align-items:center;gap:8px;
+  padding-bottom:7px;
+  border-bottom:1px solid var(--line);
+  font-family:var(--fm);letter-spacing:.5px;
+  text-transform:uppercase;
+}
+.sh:first-child{margin-top:0}
+.sh.red{color:var(--red2);border-color:rgba(232,84,84,0.25)}
+.sh.amber{color:var(--amber);border-color:rgba(245,166,35,0.25)}
+.sh.green{color:var(--green);border-color:rgba(46,201,138,0.25)}
+.bt{font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:10px}
+.dv{border:none;border-top:1px solid var(--line);margin:14px 0}
+.hl{
+  border-left:2px solid var(--sky);
+  padding:9px 13px;
+  background:rgba(79,175,240,0.06);
+  border-radius:0 var(--r3) var(--r3) 0;
+  font-size:12px;color:var(--t2);line-height:1.65;
+  margin:10px 0;
+}
+.hl strong{color:var(--t1)}
+.mono{
+  background:var(--void);
+  border:1px solid var(--line2);
+  border-radius:var(--r2);
+  padding:11px 13px;
+  font-family:var(--fm);font-size:11.5px;
+  color:var(--t2);line-height:1.9;
+  margin:8px 0;white-space:pre-wrap;
+  word-break:break-all;overflow-x:auto;
+}
+.mono .h{color:var(--sky2);font-weight:500}
+.mono .w{color:var(--amber);font-weight:500}
+.mono .r{color:var(--red2)}
+.mono .g{color:var(--green)}
+
+/* ── TAGS ───────────────────────────────── */
+.tag{
+  display:inline-flex;padding:2px 8px;
+  border-radius:20px;font-size:10.5px;font-weight:500;
+  margin:2px;font-family:var(--fm);
+  border:1px solid transparent;
+}
+.td{background:rgba(232,84,84,0.15);color:var(--red2);border-color:rgba(232,84,84,0.3)}
+.tw{background:rgba(245,166,35,0.15);color:var(--amber);border-color:rgba(245,166,35,0.3)}
+.ti{background:rgba(79,175,240,0.15);color:var(--sky2);border-color:rgba(79,175,240,0.3)}
+.tg{background:rgba(46,201,138,0.15);color:var(--green);border-color:rgba(46,201,138,0.3)}
+.tgr{background:rgba(61,96,128,0.15);color:var(--t2);border-color:var(--line)}
+
+/* ── ALERTS ─────────────────────────────── */
+.al{
+  border-radius:var(--r2);padding:10px 13px;
+  margin:10px 0;display:flex;gap:9px;
+  font-size:12px;line-height:1.65;
+  border-left:3px solid;
+}
+.al-ico{font-size:16px;flex-shrink:0;margin-top:1px}
+.al-d{background:rgba(232,84,84,0.08);border-color:var(--red);color:#f0b0b0}
+.al-w{background:rgba(245,166,35,0.08);border-color:var(--amber);color:#f5d080}
+.al-i{background:rgba(79,175,240,0.08);border-color:var(--sky);color:#a0d0f0}
+.al-g{background:rgba(46,201,138,0.08);border-color:var(--green);color:#90e0c0}
+.al strong{font-weight:600}
+
+/* ── TABLES ─────────────────────────────── */
+.tw-wrap{overflow-x:auto;margin:8px 0;-webkit-overflow-scrolling:touch}
+.tbl{
+  width:100%;border-collapse:collapse;
+  font-size:12px;min-width:280px;
+}
+.tbl th{
+  text-align:left;padding:7px 10px;
+  background:var(--lift);color:var(--sky);
+  font-size:9.5px;letter-spacing:1px;
+  text-transform:uppercase;border-bottom:1px solid var(--line2);
+  font-family:var(--fm);font-weight:500;
+}
+.tbl td{
+  padding:7px 10px;
+  border-bottom:1px solid var(--line);
+  color:var(--t2);vertical-align:top;
+}
+.tbl tr:hover td{background:rgba(79,175,240,0.04)}
+.tbl td:first-child{color:var(--t1);font-weight:500;font-family:var(--fm);font-size:11px}
+
+/* ── GRIDS ──────────────────────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+@media(max-width:500px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}}
+.mc{
+  background:var(--surface);
+  border:1px solid var(--line2);
+  border-radius:var(--r2);
+  padding:11px 12px;
+  transition:.15s;
+}
+.mc:hover{border-color:rgba(79,175,240,0.35)}
+.mc-ico{font-size:18px;margin-bottom:6px;color:var(--sky)}
+.mc-t{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:3px}
+.mc-d{font-size:11px;color:var(--t2);line-height:1.5}
+
+/* ── LISTS ──────────────────────────────── */
+.items{display:flex;flex-direction:column;gap:7px}
+.item{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--t2);line-height:1.55}
+.item .ico{
+  font-size:12px;flex-shrink:0;margin-top:3px;
+  color:var(--sky);font-family:var(--fm);
+  background:rgba(79,175,240,0.1);
+  border-radius:3px;padding:0 4px;
+  min-width:18px;text-align:center;
+}
+.item strong{color:var(--t1)}
+
+.steps{display:flex;flex-direction:column;gap:9px;margin:8px 0}
+.step{display:flex;gap:10px}
+.sn{
+  width:24px;height:24px;border-radius:6px;
+  background:rgba(79,175,240,0.15);
+  border:1px solid rgba(79,175,240,0.3);
+  color:var(--sky);font-size:10px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;font-family:var(--fm);
+}
+.sb{font-size:12px;color:var(--t2);line-height:1.55}
+.sb strong{color:var(--t1);display:block;margin-bottom:2px}
+
+/* ── SIGWX SYMBOL BOX ────────────────────── */
+.sym-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:8px;margin:10px 0;
+}
+.sym-card{
+  background:var(--surface);border:1px solid var(--line2);
+  border-radius:var(--r2);padding:10px 12px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.sym-icon{
+  font-size:20px;min-width:28px;text-align:center;
+  flex-shrink:0;margin-top:2px;
+}
+.sym-t{font-size:11.5px;font-weight:600;color:var(--t1);margin-bottom:2px;font-family:var(--fm)}
+.sym-d{font-size:10.5px;color:var(--t3);line-height:1.4}
+
+/* ── WIND BARB TABLE ────────────────────── */
+.wind-barb{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.wb-row{display:flex;align-items:center;gap:12px;padding:6px 10px;background:var(--surface);border-radius:var(--r3)}
+.wb-sym{font-family:var(--fm);font-size:13px;color:var(--amber);min-width:60px;font-weight:500}
+.wb-desc{font-size:12px;color:var(--t2)}
+
+/* ── SCROLLBAR ──────────────────────────── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--rim);border-radius:4px}
+
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-top">
+    <div class="hdr-badge">✈ MET HANDBOOK</div>
+    <h1>Aviation Meteorology<br><em>Dispatcher & Pilot Reference</em></h1>
+  </div>
+  <div class="hdr-meta">
+    <span class="hm">ICAO Annex 3 · Doc 8896</span>
+    <span class="hm">WMO No.49</span>
+    <span class="hm">Thai AERO MET Division</span>
+    <span class="hm">Mobile Ready</span>
+  </div>
+
+</header>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bnav" id="bnav"></nav>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="snav-hd">17 Chapters</div>
+  <div id="snav"></div>
+</nav>
+<main class="main" id="main">
+
+<!-- PRIORITY CARD -->
+<div class="pcard" id="home">
+  <div class="pcard-title">// DISPATCH PRIORITY ORDER</div>
+  <div class="pri"><div class="pri-n p1">01</div><div><div class="pri-t">METAR / TAF</div><div class="pri-s">อ่านก่อนทุกเที่ยว · Dep – Dest – Alternate</div></div></div>
+  <div class="pri"><div class="pri-n p1">02</div><div><div class="pri-t">SIGWX Chart</div><div class="pri-s">ภาพรวมสภาพอากาศตลอดเส้นทาง</div></div></div>
+  <div class="pri"><div class="pri-n p1">03</div><div><div class="pri-t">Wind Aloft / Upper Wind</div><div class="pri-s">Fuel · Optimum Level · ETA</div></div></div>
+  <div class="pri"><div class="pri-n p2">04</div><div><div class="pri-t">SIGMET</div><div class="pri-s">Monitor ตลอด Flight Watch</div></div></div>
+  <div class="pri"><div class="pri-n p2">05</div><div><div class="pri-t">Thunderstorm / CB Analysis</div><div class="pri-s">Route Avoidance · Extra Fuel</div></div></div>
+  <div class="pri"><div class="pri-n p2">06</div><div><div class="pri-t">Typhoon Monitoring</div><div class="pri-s">JTWC Track · Reroute · Extra Fuel</div></div></div>
+  <div class="pri"><div class="pri-n p3">07</div><div><div class="pri-t">Alternate Weather</div><div class="pri-s">TAF ดีกว่า Alt Minima ณ ETA</div></div></div>
+  <div class="pri"><div class="pri-n p3">08</div><div><div class="pri-t">Icing</div><div class="pri-s">Freezing Level · MOD–SEV → Fuel impact</div></div></div>
+  <div class="pri"><div class="pri-n p4">09</div><div><div class="pri-t">Turbulence</div><div class="pri-s">CAT · PIREP · SIGMET SEV TURB</div></div></div>
+  <div class="pri"><div class="pri-n p5">10</div><div><div class="pri-t">Front Analysis</div><div class="pri-s">Synoptic Situation Overview</div></div></div>
+</div>
+
+<div id="secs"></div>
+
+</main>
+</div>
+
+<script>
+const chapters = [
+
+/* ── 01 ── */
+{num:"01",title:"พื้นฐานอุตุนิยมวิทยา",sub:"Basic Meteorology — Atmosphere & ISA",
+desc:"โครงสร้างบรรยากาศ, ISA และ Density Altitude — พื้นฐานที่ทุกกลุ่มต้องรู้เพื่อเชื่อมโยงสภาพอากาศกับ Performance",
+html:`<div class="sec-body">
+<div class="sub-hd">🌐 โครงสร้างชั้นบรรยากาศ</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ชั้น</th><th>ระดับความสูง</th><th>อุณหภูมิ</th><th>ลักษณะสำคัญ</th></tr></thead>
+<tbody>
+<tr><td>Troposphere</td><td>0–12 km / FL400</td><td>ลด −6.5°C/1,000 m</td><td>สภาพอากาศทั้งหมดอยู่ที่นี่ / CB ถึง FL600 ในเขตร้อน</td></tr>
+<tr><td>Tropopause</td><td>Temperate FL300–FL350<br>Tropical FL500–FL600</td><td>−56.5°C คงที่</td><td>รอยต่อ / Jet Stream Core / อุณหภูมิหยุดลด</td></tr>
+<tr><td>Stratosphere</td><td>12–50 km</td><td>เพิ่มขึ้นตามความสูง</td><td>อากาศนิ่ง ไม่มีเมฆ / Ozone Layer / Long-haul อยู่ Lower Strat.</td></tr>
+<tr><td>Mesosphere</td><td>50–80 km</td><td>ลดต่ำสุด −90°C</td><td>ดาวตกสว่าง / ไม่เกี่ยวการบินพาณิชย์</td></tr>
+<tr><td>Thermosphere</td><td>80–600 km</td><td>สูงมาก &gt;500°C</td><td>Aurora / ISS orbit</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">🌡 ISA — International Standard Atmosphere</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>พารามิเตอร์</th><th>ค่า ISA ที่ MSL</th><th>การเปลี่ยนแปลง</th><th>นักบิน/Dispatcher ใช้</th></tr></thead>
+<tbody>
+<tr><td>Temperature</td><td>15°C (288.15 K)</td><td>−6.5°C / 1,000 m ใน Troposphere<br>คงที่ที่ Tropopause</td><td>ISA Deviation → Performance</td></tr>
+<tr><td>Pressure</td><td>1013.25 hPa (29.92 inHg)</td><td>ลด Exponential ตามความสูง<br>ทุก 27–30 ft = 1 hPa ที่ผิว</td><td>QNH / QNE / Altimeter setting</td></tr>
+<tr><td>Density</td><td>1.225 kg/m³</td><td>ลดตามทั้ง T และ P</td><td>Density Altitude → Thrust/Lift</td></tr>
+<tr><td>Speed of Sound</td><td>661 kt (340 m/s)</td><td>ลดตาม T √T/T₀ × 661</td><td>Mach Number = TAS / Local SoS</td></tr>
+<tr><td>Viscosity</td><td>1.789 × 10⁻⁵ Pa·s</td><td>เปลี่ยนตาม T</td><td>Reynolds Number / Icing</td></tr>
+</tbody></table></div>
+
+<div class="hl-box"><strong>ISA Deviation:</strong> ISA+10°C หมายถึงอุณหภูมิจริงสูงกว่ามาตรฐาน 10°C / คำนวณ ISA OAT = 15 − (Alt(ft)/1,000 × 6.5) แล้วเปรียบกับ OAT จริง</div>
+
+<hr class="dv">
+<div class="sub-hd">📐 Pressure Altitude vs Density Altitude</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>Pressure Altitude (PA)</strong> — ความสูงอ้างอิง QNE 1013.25 hPa / ใช้คำนวณ Performance Charts ทั้งหมด / FL = PA / 100</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Density Altitude (DA)</strong> = PA + (ISA Deviation × 120 ft) ≈ คือ "ความสูงที่เครื่องบินรู้สึก" / ISA+ หรืออากาศชื้น → DA สูงกว่า PA มาก</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Humidity Effect</strong> — อากาศชื้นมี Density ต่ำกว่าอากาศแห้งที่ T เดียวกัน เพราะ H₂O (M=18) เบากว่า N₂ (M=28) → ยิ่งชื้น DA ยิ่งสูง</div></div>
+</div>
+<div class="mono">ตัวอย่าง: Runway elevation = 1,000 ft, OAT = 35°C, RH ≈ 80%
+ISA ที่ 1,000 ft = 15 − (1×6.5) = 8.5°C
+ISA Dev = 35 − 8.5 = ISA+26.5°C
+Density Altitude ≈ 1,000 + (26.5×120) = ~4,180 ft
+→ เครื่อง "รู้สึก" ว่าอยู่ที่ 4,180 ft แม้ Runway จริงที่ 1,000 ft</div>
+
+<hr class="dv">
+<div class="sub-hd">✈ ผลต่อ Aircraft Performance — 3 กลุ่มต้องรู้</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Performance Parameter</th><th>ISA+ / DA สูง</th><th>ผลกระทบ</th><th>Who Needs</th></tr></thead>
+<tbody>
+<tr><td>Takeoff Distance</td><td>เพิ่ม</td><td>Thrust ↓ Lift ↓ → ต้องระยะมากขึ้น</td><td>Dispatcher / Pilot</td></tr>
+<tr><td>Max Takeoff Weight</td><td>ลด 2–5%</td><td>อาจต้อง Payload restriction</td><td>Dispatcher</td></tr>
+<tr><td>Initial Climb Rate</td><td>ลด</td><td>Obstacle Clearance อาจกระทบ</td><td>Pilot / Dispatcher</td></tr>
+<tr><td>Max Cruise Altitude</td><td>ลด</td><td>Thrust ไม่พอค้ำ Weight ที่ FL สูง</td><td>Dispatcher / Met</td></tr>
+<tr><td>TAS ที่ IAS เดิม</td><td>เพิ่ม</td><td>Landing Distance เพิ่ม</td><td>Pilot</td></tr>
+<tr><td>Engine Thrust (Jet)</td><td>ลด proportional</td><td>EGT limit อาจถึงก่อน N1</td><td>Pilot / Engineer</td></tr>
+</tbody></table></div>
+<div class="al al-w"><span class="al-icon">⚠</span><div><strong>Hot & High Airports ต้องระวัง:</strong> DMK ฤดูร้อน OAT 38°C+ / KTM (Kathmandu) Elevation 4,390 ft ISA+15°C → DA อาจถึง 7,000+ ft / ต้องคำนวณ Performance ทุกครั้ง ไม่ใช้ค่าเฉลี่ย</div></div>
+</div>`},
+
+/* ── 02 ── */
+{num:"02",title:"ลม (Wind)",sub:"Wind Formation, Types & Jet Stream",
+desc:"กลไกการเกิดลม ลมทุกระดับ Jet Stream และ Wind Component — 3 กลุ่มใช้งานในมุมต่างกัน",
+html:`<div class="sec-body">
+<div class="sub-hd">⚡ 4 แรงที่ทำให้เกิดลม</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>แรง</th><th>กลไก</th><th>ทิศทาง</th><th>ผลสำคัญ</th></tr></thead>
+<tbody>
+<tr><td>Pressure Gradient Force (PGF)</td><td>ความแตกต่างความกด</td><td>จากสูง → ต่ำ ⊥ Isobar</td><td>ยิ่ง Isobar ถี่ ลมยิ่งแรง</td></tr>
+<tr><td>Coriolis Force (CF)</td><td>การหมุนของโลก (ω)</td><td>เบี่ยงขวา (N) / เบี่ยงซ้าย (S)</td><td>ไม่มีที่เส้นศูนย์สูตร / เพิ่มตาม Latitude</td></tr>
+<tr><td>Friction</td><td>ความหยาบผิวโลก</td><td>ต้านลมและเบี่ยงเข้า Low 15–30°</td><td>ส่งผลต่ำกว่า ~2,000 ft AGL</td></tr>
+<tr><td>Centripetal Force</td><td>เส้นทางโค้ง</td><td>เข้าหาศูนย์กลางการโค้ง</td><td>Cyclostrophic ใน Tropical Cyclone</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">🌬 ประเภทลมตามระดับความสูง</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ประเภท</th><th>ระดับ</th><th>สมดุลแรง</th><th>ผู้ใช้ / ประโยชน์</th></tr></thead>
+<tbody>
+<tr><td>Surface Wind</td><td>&lt;2,000 ft AGL</td><td>PGF + CF + Friction</td><td>Pilot: Runway selection / XW check<br>Met: Front analysis</td></tr>
+<tr><td>Gradient Wind</td><td>2,000–5,000 ft</td><td>PGF + CF + Centripetal</td><td>Dispatcher: Low-level routing</td></tr>
+<tr><td>Geostrophic Wind</td><td>&gt;FL050</td><td>PGF = CF (straight Isobar)</td><td>Met: Isobar → ลม parallel<br>ทิศ: ลม ∥ Isobar / Low ทางซ้าย</td></tr>
+<tr><td>Thermal Wind</td><td>ทุกระดับ</td><td>ความแตกต่าง T ตามแนวนอน</td><td>Met: บอกทิศทาง Jet Stream</td></tr>
+<tr><td>Jet Stream</td><td>FL250–FL450</td><td>Strong PGF + CF</td><td>Dispatcher: Route/Fuel planning<br>&gt;60 kt / core 150–200+ kt</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">🧮 Wind Component — ใช้จริงทุกวัน</div>
+<div class="items">
+<div class="item"><span class="ico">→</span><div><strong>Headwind</strong> = Wind Speed × cos(θ) — θ = มุมระหว่าง Wind direction กับ Runway heading / เพิ่ม TAS ลด Ground Speed ลด ETA</div></div>
+<div class="item"><span class="ico">→</span><div><strong>Tailwind</strong> = Wind Speed × cos(180°−θ) — เพิ่ม Ground Speed ลด Fuel / ระวัง Landing Distance ยาวขึ้น / max TW ปกติ 10–15 kt สำหรับ T/O L/D</div></div>
+<div class="item"><span class="ico">→</span><div><strong>Crosswind</strong> = Wind Speed × sin(θ) — ต้องไม่เกิน Max Demonstrated Crosswind / B737: ~35 kt / A320: ~38 kt / ระวัง Wet/Contaminated Runway ลด limit</div></div>
+<div class="item"><span class="ico">→</span><div><strong>En-route Wind Component</strong> — (HW) ลด Ground Speed → เพิ่ม Trip Fuel และ Flight Time / Dispatcher ต้องคำนวณ Average Wind Component ตลอด Route</div></div>
+</div>
+<div class="mono">ตัวอย่าง: Wind 270/25KT, RWY 28 (HDG 280°)
+θ = |280 − 270| = 10°
+HW = 25 × cos(10°) = 24.6 kt ✓
+XW = 25 × sin(10°) = 4.3 kt ✓ ปลอดภัย
+
+ตัวอย่างที่ 2: Wind 220/35KT, RWY 28
+θ = |280 − 220| = 60°
+HW = 35 × cos(60°) = 17.5 kt
+XW = 35 × sin(60°) = 30.3 kt ⚠ ใกล้ Limit</div>
+
+<hr class="dv">
+<div class="sub-hd">🌀 Jet Stream — รายละเอียดสำหรับ 3 กลุ่ม</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Jet Stream</th><th>ตำแหน่ง</th><th>ความเร็ว</th><th>ฤดู</th><th>ผลต่อการบิน</th></tr></thead>
+<tbody>
+<tr><td>Polar Jet (PJ)</td><td>30–60°N/S FL280–FL400</td><td>60–200+ kt</td><td>ฤดูหนาว: แรงมาก<br>ฤดูร้อน: อ่อนเหนือขึ้น</td><td>Trans-Pacific / Asia–Europe<br>Rossby Wave → Meander</td></tr>
+<tr><td>Subtropical Jet (STJ)</td><td>20–35°N/S FL350–FL430</td><td>60–130 kt</td><td>คงที่กว่า PJ</td><td>Asia–ME / Trans-Indian<br>ส่งผล BKK–DXB, BKK–NRT</td></tr>
+<tr><td>Tropical Easterly Jet</td><td>5–15°N FL350–FL450</td><td>30–60 kt</td><td>Summer Monsoon</td><td>ส่งผลเส้นทางใน Tropical region</td></tr>
+</tbody></table></div>
+<div class="items">
+<div class="item"><span class="ico">⚠</span><div><strong>CAT ใกล้ Jet Stream</strong> — พบที่ Entrance/Exit Regions / Curved Jet / Jet Crossing / ห่าง Jet Core 50–100 nm ยังพบ CAT ได้ / ตรวจ PIREP เสมอ</div></div>
+<div class="item"><span class="ico">💡</span><div><strong>Dispatcher ใช้:</strong> Tailwind ≥100 kt ที่ FL380 ช่วยลด BKK–NRT ~45–60 นาที / ประหยัด Fuel ~3–5% / ดู Upper Wind Chart ทุก 6 ชม. ก่อน Dispatch</div></div>
+<div class="item"><span class="ico">✈</span><div><strong>นักบิน OFP:</strong> Wind Correction Angle (WCA) = arcsin(XW/TAS) / ปรับ Heading เพื่อชดเชย Drift</div></div>
+</div>
+</div>`},
+
+/* ── 03 ── */
+{num:"03",title:"เมฆ (Cloud)",sub:"Cloud Classification, Icing & CB Avoidance",
+desc:"การจำแนกเมฆ ICAO ทุกชนิด ผลกระทบต่อการบิน และหลักการเลี่ยง CB สำหรับทั้ง 3 กลุ่ม",
+html:`<div class="sec-body">
+<div class="sub-hd">High Clouds — FL200 ขึ้นไป (Ice Crystals)</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>เมฆ</th><th>ลักษณะ</th><th>บ่งบอก</th><th>ผลต่อการบิน</th></tr></thead>
+<tbody>
+<tr><td>Cirrus (Ci)</td><td>เส้นใยบาง ขาว</td><td>Jet Stream ใกล้ / Warm Front 24–48h</td><td>Light Icing / ทัศนวิสัยดี</td></tr>
+<tr><td>Cirrostratus (Cs)</td><td>ม่านบาง เห็น Halo</td><td>Warm Front กำลังเข้า</td><td>Light Icing ระดับสูง / Halo ≠ อันตราย</td></tr>
+<tr><td>Cirrocumulus (Cc)</td><td>ก้อนเล็กเรียง "ปลาทู"</td><td>หายาก / อากาศไม่เสถียรระดับสูง</td><td>น้อยมาก</td></tr>
+</tbody></table></div>
+
+<div class="sub-hd">Middle Clouds — FL065–FL250</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>เมฆ</th><th>ลักษณะ</th><th>สภาพอากาศ</th><th>ผลต่อการบิน</th></tr></thead>
+<tbody>
+<tr><td>Altostratus (As)</td><td>แผ่นหนาสีเทา</td><td>Warm Front / ฝนต่อเนื่อง</td><td>MOD Icing / IFR / ไม่มี Halo ถ้าหนา</td></tr>
+<tr><td>Altocumulus (Ac)</td><td>ก้อนกลาง</td><td>อากาศไม่เสถียร</td><td>MOD Turb / Icing / Ac Castellanus = CB กำลังพัฒนา</td></tr>
+<tr><td>Ac Lenticularis</td><td>รูปเลนส์/จาน UFO</td><td>Mountain Wave</td><td>SEV Turb / ระวังมาก / Rotor Zone ใต้</td></tr>
+</tbody></table></div>
+
+<div class="sub-hd">Low Clouds — Surface–FL065</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>เมฆ</th><th>ลักษณะ</th><th>สภาพอากาศ</th><th>ผลต่อการบิน</th></tr></thead>
+<tbody>
+<tr><td>Stratus (St)</td><td>แผ่นต่ำสม่ำเสมอ</td><td>Ceiling ต่ำ / Drizzle</td><td>IFR / Rime Icing / ไม่มีฟ้าผ่า</td></tr>
+<tr><td>Stratocumulus (Sc)</td><td>ก้อนต่ำ พบมากที่สุด</td><td>ฤดูหนาว / ตาม Subsidence</td><td>ระวัง EMBD CB ในฤดูฝน / Light–MOD Icing</td></tr>
+<tr><td>Nimbostratus (Ns)</td><td>ฝนตกต่อเนื่อง</td><td>ใกล้ Warm Front</td><td>IFR / MOD–SEV Icing / ทัศนวิสัยแย่มาก</td></tr>
+</tbody></table></div>
+
+<div class="sub-hd" style="color:#c0392b">⚠ Vertical Clouds — อันตรายสูงสุด</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>เมฆ</th><th>โครงสร้าง</th><th>อันตราย</th><th>ระยะเลี่ยง</th></tr></thead>
+<tbody>
+<tr><td>Towering Cu (TCu)</td><td>ฐาน 1,000–6,000 ft ยอดพุ่ง</td><td>MOD Turb / Icing / กำลัง → CB</td><td>10 nm ด้านข้าง / ติดตาม Radar</td></tr>
+<tr><td>Cumulonimbus (CB)</td><td>ฐาน 500–6,000 ft ยอด FL300–FL600+</td><td>ทุกอย่าง (ดูรายการด้านล่าง)</td><td>≥20 nm ด้านข้าง / ≥1,000 ft เหนือยอด</td></tr>
+</tbody></table></div>
+
+<div class="sub-hd">CB Avoidance — กฎสำหรับ 3 กลุ่ม</div>
+<div class="items">
+<div class="item"><span class="ico">⛈</span><div><strong>ระยะเลี่ยง:</strong> ≥20 nm ด้านข้าง / ≥5,000 ft เหนือยอด (ถ้าเลี่ยงเหนือ) / ห้ามบินใต้ Anvil Cloud / ห้าม Penetrate เด็ดขาด</div></div>
+<div class="item"><span class="ico">📡</span><div><strong>Met / Dispatcher:</strong> ดู Satellite IR (cloud top temp) / Weather Radar Echo Top / SIGWX EMBD/FRQ/OCNL CB symbols</div></div>
+<div class="item"><span class="ico">✈</span><div><strong>นักบิน:</strong> เปิด Weather Radar Tilt ต่ำ ≥6° เพื่อดู Cell ที่ไกล / ปรับ Gain / ดู PIREP CB / ถ้า EMBD CB ต้องพึ่ง Radar 100%</div></div>
+</div>
+
+<div class="sub-hd">📊 Cloud Amount ใน METAR/TAF</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Code</th><th>Oktas</th><th>Flight Rules</th><th>Ceiling?</th><th>หมายเหตุ</th></tr></thead>
+<tbody>
+<tr><td>SKC / CLR</td><td>0/8</td><td><span class="tag t-g">VFR</span></td><td>ไม่</td><td>CLR ใช้ใน US, SKC ใช้ ICAO</td></tr>
+<tr><td>FEW</td><td>1–2/8</td><td><span class="tag t-g">VFR</span></td><td>ไม่</td><td>ไม่ถือเป็น Ceiling แม้จะต่ำ</td></tr>
+<tr><td>SCT</td><td>3–4/8</td><td><span class="tag t-w">Marginal</span></td><td>ไม่</td><td>ไม่ถือเป็น Ceiling</td></tr>
+<tr><td>BKN</td><td>5–7/8</td><td><span class="tag t-d">IFR</span></td><td>✅ ใช่</td><td>Ceiling = BKN ต่ำสุด</td></tr>
+<tr><td>OVC</td><td>8/8</td><td><span class="tag t-d">IFR/LIFR</span></td><td>✅ ใช่</td><td>Ceiling = OVC</td></tr>
+<tr><td>VV///</td><td>ไม่เห็นฐาน</td><td><span class="tag t-d">LIFR</span></td><td>✅ ใช่</td><td>Vertical Visibility = Ceiling</td></tr>
+<tr><td>NSC</td><td>—</td><td><span class="tag t-g">VFR</span></td><td>ไม่</td><td>No Sig Cloud &lt;5,000 ft ไม่มี CB</td></tr>
+</tbody></table></div>
+<div class="hl-box"><strong>กฎ Ceiling:</strong> Ceiling = ชั้น BKN หรือ OVC ที่ต่ำที่สุด / FEW009 BKN025 → Ceiling = 2,500 ft BKN / ใช้เปรียบกับ DH/DA ใน Approach</div>
+</div>`},
+
+/* ── 04 ── */
+{num:"04",title:"Visibility & Fog",sub:"ทัศนวิสัย หมอก และ CAT Minima",
+desc:"หมอกทุกชนิด ทัศนวิสัยต่ำ CAT Minima และ Alternate Selection — ใช้งานจริงทุกเที่ยวบิน",
+html:`<div class="sec-body">
+<div class="sub-hd">🌫 5 ชนิดหมอก — กลไกและพยากรณ์</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ชนิด</th><th>กลไก</th><th>เงื่อนไข</th><th>คงอยู่</th><th>ตัวอย่าง</th></tr></thead>
+<tbody>
+<tr><td>Radiation Fog</td><td>พื้นดินเย็นตัวคายรังสี</td><td>ฟ้าใส ลมสงบ RH สูง กลางคืน</td><td>สลายตอนสาย เมื่อ T เพิ่ม</td><td>เชียงใหม่ พระนครศรีอยุธยา ฤดูหนาว</td></tr>
+<tr><td>Advection Fog</td><td>ลมอุ่นชื้นพัดผ่านผิวเย็น</td><td>ลมพัด / ผิวน้ำเย็นกว่าอากาศ</td><td>นานตามลม อาจเป็นวัน</td><td>LHR FRA / ชายฝั่งทะเล</td></tr>
+<tr><td>Upslope/Hill Fog</td><td>อากาศชื้นพัดขึ้นภูเขา</td><td>ลมพัดตรงไปภูเขา RH ≥100%</td><td>ตราบลมยังพัด</td><td>DMK ฤดูมรสุม / Mountain Airports</td></tr>
+<tr><td>Steam Fog</td><td>อากาศเย็นพัดผ่านน้ำอุ่น</td><td>ΔT &gt;10°C / น้ำอุ่นกว่าอากาศ</td><td>ตื้น &lt;100 ft / สั้น</td><td>ชายฝั่งฤดูหนาว Arctic region</td></tr>
+<tr><td>Precipitation Fog</td><td>ฝนระเหยในอากาศแห้ง</td><td>ฝน + อากาศแห้งใต้ Cloud Base</td><td>ตราบฝนยังตก</td><td>หน้า Warm Front</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">👁 Reduced Visibility — สาเหตุอื่น</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Code</th><th>ชื่อ</th><th>ทัศนวิสัย</th><th>เงื่อนไข</th></tr></thead>
+<tbody>
+<tr><td>FG</td><td>Fog</td><td>&lt;1,000 m</td><td>RH ≥95%</td></tr>
+<tr><td>BR</td><td>Mist</td><td>1,000–8,000 m</td><td>RH ≥95% หยดน้ำเล็ก</td></tr>
+<tr><td>HZ</td><td>Haze</td><td>1,000–8,000 m</td><td>RH &lt;80% ฝุ่นแขวนลอย</td></tr>
+<tr><td>FU</td><td>Smoke</td><td>แปรผัน</td><td>ไฟป่า/โรงงาน</td></tr>
+<tr><td>DU</td><td>Dust</td><td>&lt;1,000 m</td><td>พายุฝุ่น Middle East</td></tr>
+<tr><td>SA</td><td>Sand</td><td>&lt;1,000 m</td><td>พายุทราย</td></tr>
+<tr><td>BLSN</td><td>Blowing Snow</td><td>&lt;500 m</td><td>ลมพัดหิมะ</td></tr>
+<tr><td>VA</td><td>Volcanic Ash</td><td>ตาม Density</td><td>ภูเขาไฟระเบิด</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">✈ CAT Minima — ครบสำหรับ 3 กลุ่ม</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Category</th><th>Min RVR / Vis</th><th>DH / DA</th><th>ข้อกำหนดหลัก</th><th>Dispatcher</th></tr></thead>
+<tbody>
+<tr><td>Non-Precision (NPA)</td><td>VIS ≥1,500 m หรือ RVR ≥800 m</td><td>MDA ขึ้นกับ Approach</td><td>VOR / NDB / RNAV</td><td>ใช้ MDA เปรียบ TAF</td></tr>
+<tr><td>CAT I</td><td>RVR ≥550 m (VIS ≥800 m)</td><td>DH 200 ft</td><td>Standard ILS / ส่วนใหญ่</td><td>ตรวจ TAF RVR ≥550 m ณ ETA</td></tr>
+<tr><td>CAT II</td><td>RVR 300–549 m</td><td>DH 100 ft</td><td>Autoland capable / Crew qual.</td><td>ตรวจ OPS Specs ว่า approved</td></tr>
+<tr><td>CAT IIIa</td><td>RVR ≥175 m</td><td>DH &lt;100 ft</td><td>Autoland / Dual AP / HUD</td><td>Monitor RVR ถี่ / SPECI</td></tr>
+<tr><td>CAT IIIb</td><td>RVR 50–174 m</td><td>DH &lt;50 ft / No DH</td><td>Fail-passive / Dual Autoland</td><td>ตรวจ Airport approval</td></tr>
+</tbody></table></div>
+<div class="hl-box"><strong>Planning Minima vs Operating Minima:</strong> Planning Minima ใช้ Dispatch / Operating Minima ใช้จริงบนเครื่อง / Planning อาจสูงกว่า Operating เพื่อ Safety margin</div>
+
+<div class="sub-hd">📋 Alternate Selection Rules</div>
+<div class="items">
+<div class="item"><span class="ico">1</span><div><strong>ตรวจ TAF Destination ±1 ชม. จาก ETA</strong> — รวม TEMPO / ถ้าอาจต่ำกว่า Destination Minima → ต้องเลือก Alternate</div></div>
+<div class="item"><span class="ico">2</span><div><strong>Alternate TAF ต้องดีกว่า Alternate Minima</strong> — ทั่วไป = Approach Minima +200 ft / +800 m / ตลอดช่วง ETA ที่ Alternate</div></div>
+<div class="item"><span class="ico">3</span><div><strong>PROB30 ใน TAF</strong> — ทั่วไปไม่บังคับ Alternate / PROB40 ต้องพิจารณาเหมือน TEMPO</div></div>
+<div class="item"><span class="ico">4</span><div><strong>Second Alternate</strong> — ถ้า Alternate TAF ก็ TEMPO ต่ำกว่า Alt Minima → ต้องหา Second Alt หรือ Delay</div></div>
+</div>
+<div class="al al-d"><span class="al-icon">⛔</span><div><strong>ห้ามลืม TEMPO:</strong> TAF แสดง TEMPO VIS 400m ในช่วง ETA → แม้ Base Forecast ดี ต้องเลือก Alternate เสมอ / TEMPO อาจเกิดได้จริง</div></div>
+</div>`},
+
+/* ── 05 ── */
+{num:"05",title:"Thunderstorm",sub:"CB Life Cycle, Hazards & Dispatcher Action",
+desc:"กลไกพายุ ระยะพัฒนา อันตรายทั้งหมด และขั้นตอนที่ Dispatcher/Met/นักบินต้องดำเนินการ",
+html:`<div class="sec-body">
+<div class="sub-hd">🔺 3 เงื่อนไขเกิดพายุ — ต้องครบทั้งหมด</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>เงื่อนไข</th><th>รายละเอียด</th><th>ตรวจจาก</th></tr></thead>
+<tbody>
+<tr><td>💧 Moisture</td><td>ความชื้นสูง / Dew Point Spread ≤5°C / Pw (Precipitable Water) สูง</td><td>Sounding / Upper Air Chart</td></tr>
+<tr><td>↕ Instability</td><td>ELR &gt; DALR (Absolute Unstable) หรือ ELR &gt; SALR (Conditional) / CAPE &gt;1,000 J/kg</td><td>Skew-T Log-P / Sounding</td></tr>
+<tr><td>☁ Lifting Mechanism</td><td>Cold Front / Orographic / ITCZ Convergence / Daytime Heating / Upper Level Divergence</td><td>SIGWX / Surface Analysis</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">⏱ Life Cycle of Thunderstorm</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ระยะ</th><th>ระยะเวลา</th><th>ลักษณะ</th><th>อันตราย</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td>Cumulus Stage</td><td>20–30 min</td><td>Updraft เท่านั้น / ยอดพุ่ง / ไม่มี Lightning</td><td>น้อย — ยังพัฒนา</td><td>ติดตาม Radar / PIREP</td></tr>
+<tr><td>Mature Stage</td><td>20–60 min</td><td>Updraft + Downdraft พร้อมกัน / Anvil เริ่มปรากฏ</td><td>สูงสุด: Lightning, Hail, Microburst, SEV Turb, SEV Icing</td><td>เลี่ยง ≥20 nm เด็ดขาด</td></tr>
+<tr><td>Dissipating Stage</td><td>30–60 min</td><td>Downdraft ครอบงำ / Anvil ชัดเจน / ฝนลด</td><td>ยังมี Lightning, Turb, LLWS บนพื้น</td><td>ยังต้องระวัง / ไม่บินใต้ Anvil</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd" style="color:#c0392b">⚡ อันตราย 7 ประการจาก CB</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>อันตราย</th><th>กลไก</th><th>ผลต่อเครื่องบิน</th><th>ผู้ได้รับผล</th></tr></thead>
+<tbody>
+<tr><td>Lightning</td><td>Charge separation ใน CB</td><td>Avionics damage / Fuel ignition risk / Skin puncture</td><td>นักบิน / ช่าง</td></tr>
+<tr><td>Hail (GR/GS)</td><td>Updraft พัด Ice pellets ขึ้นลง</td><td>Radome / Leading Edge / Windshield / Engine ชำรุด</td><td>นักบิน / ช่าง</td></tr>
+<tr><td>Severe Turbulence</td><td>Updraft/Downdraft ผสม</td><td>Structural damage / Injury / Loss of control</td><td>นักบิน / ผู้โดยสาร</td></tr>
+<tr><td>Microburst</td><td>Downdraft กระทบพื้นแผ่ออก</td><td>HW → TW ฉับพลัน / ตกได้ใน 20 วินาที</td><td>นักบิน (T/O L/D)</td></tr>
+<tr><td>Severe Icing</td><td>Supercooled LWC สูงในยอด CB</td><td>Clear Ice สะสมเร็วมาก / Stall</td><td>นักบิน</td></tr>
+<tr><td>Tornado / Waterspout</td><td>Rotating Supercell</td><td>ทำลายเครื่องบินได้ภายในวินาที</td><td>นักบิน</td></tr>
+<tr><td>Low-Level Wind Shear</td><td>Gust Front ของ Downdraft</td><td>เหมือน Microburst / อันตราย Approach</td><td>นักบิน (Approach)</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">🌧 CB Types — สำหรับ Met/Dispatcher</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>Air Mass Thunderstorm</strong> — เกิดจาก Daytime Heating / บ่ายถึงเย็น / กระจัดกระจาย (ISOL) / ทำนายยาก</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Frontal Thunderstorm</strong> — ตามแนว Cold Front / เรียงเป็น Squall Line / เคลื่อนตาม Front / ทำนายง่ายกว่า</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Orographic Thunderstorm</strong> — ภูเขาบังคับอากาศลอย / พบบ่อยบริเวณ Highlands / ตำแหน่งค่อนข้างคงที่</div></div>
+<div class="item"><span class="ico">›</span><div><strong>MCS (Mesoscale Convective System)</strong> — กลุ่ม CB รวมตัวขนาดใหญ่ / อยู่นาน 6–12+ ชม. / ขยายตัวในคืน / พบมากใน Monsoon</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Squall Line</strong> — CB เรียงตาม Cold Front 100–1,000+ km / เคลื่อนเร็ว 30–50 kt / ผ่านไวแต่รุนแรงมาก</div></div>
+</div>
+<div class="al al-d"><span class="al-icon">⛔</span><div><strong>Dispatcher Decision:</strong> FRQ CB → Route Deviation + Extra Fuel ≥10–15% / EMBD CB → เพิ่ม Fuel + เตือน Crew เปิด Radar / Mature CB บน Airport → พิจารณา Delay / ห้ามบินใกล้ CB &lt;20 nm ไม่ว่ากรณีใด</div></div>
+</div>`},
+
+/* ── 06 ── */
+{num:"06",title:"Turbulence",sub:"ประเภท ระดับ การตรวจ และการรายงาน",
+desc:"Turbulence ทุกชนิด ระดับความรุนแรง ICAO การตรวจจาก 3 แหล่ง และ PIREP รายงานอย่างไร",
+html:`<div class="sec-body">
+<div class="sub-hd">📂 4 ประเภท Turbulence</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ประเภท</th><th>กลไก</th><th>ระดับ/ตำแหน่ง</th><th>ตรวจจาก</th></tr></thead>
+<tbody>
+<tr><td>Mechanical Turbulence</td><td>ลมผ่านสิ่งกีดขวาง / Eddies</td><td>&lt;FL030 / ใกล้สิ่งปลูกสร้าง ภูเขา</td><td>METAR WS / PIREP</td></tr>
+<tr><td>Thermal (Convective)</td><td>Thermals จากพื้นร้อน / Buoyancy</td><td>FL020–FL100 ตอนกลางวัน</td><td>SIGWX / PIREP / ดู Cu ขึ้น</td></tr>
+<tr><td>Clear Air Turbulence (CAT)</td><td>Wind Shear แนวนอน/แนวตั้ง ใกล้ Jet</td><td>FL250–FL450 ไม่มีเมฆ</td><td>PIREP เท่านั้น / SIGMET / SIGWX</td></tr>
+<tr><td>Mountain Wave Turbulence</td><td>Lee Wave / Rotor ด้าน Lee side</td><td>FL100–FL450+ / ลม &gt;25 kt ข้ามยอด</td><td>Ac Lenticularis / PIREP / SIGWX ≈≈≈</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">📊 ระดับ Turbulence — ICAO Standard</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ระดับ</th><th>g-force</th><th>IAS Change</th><th>ผลต่อเครื่อง</th><th>ผลต่อผู้โดยสาร</th><th>PIREP Code</th></tr></thead>
+<tbody>
+<tr><td>Light</td><td>±0.2g</td><td>±5 kt</td><td>สั่นเล็กน้อย Attitude คงที่</td><td>รู้สึกเล็กน้อย Belt ไม่จำเป็น</td><td><span class="tag t-g">LGT TURB</span></td></tr>
+<tr><td>Moderate</td><td>±0.5g</td><td>±15 kt</td><td>Attitude/Altitude เปลี่ยน คุมได้</td><td>Belt จำเป็น / ของหล่น</td><td><span class="tag t-w">MOD TURB</span></td></tr>
+<tr><td>Severe</td><td>&gt;1g</td><td>&gt;25 kt</td><td>คุมยากชั่วคราว / IAS ใกล้ Limit</td><td>บาดเจ็บถ้าไม่คาด Belt</td><td><span class="tag t-d">SEV TURB</span></td></tr>
+<tr><td>Extreme</td><td>&gt;2g</td><td>ควบคุมไม่ได้</td><td>โครงสร้างเสียหายได้</td><td>บาดเจ็บรุนแรง</td><td><span class="tag t-d">EXTRM TURB</span></td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">✈ CAT — รายละเอียดสำหรับ 3 กลุ่ม</div>
+<div class="items">
+<div class="item"><span class="ico">🔍</span><div><strong>Met / Dispatcher:</strong> CAT พบที่ Jet Entrance (แรงที่สุด) / Jet Exit / Curved Jet / Jet Crossing / Tropopause Level / ดู SIGWX Isotach Chart / ระวัง ΔWind &gt;40 kt/1,000 ft</div></div>
+<div class="item"><span class="ico">✈</span><div><strong>นักบิน:</strong> ถ้า Moderate+ → Sign Belt / ลด Speed ถึง Turbulence Penetration Speed (Va) / รายงาน PIREP ทันที / ขอเปลี่ยน FL ถ้า Severe</div></div>
+<div class="item"><span class="ico">📡</span><div><strong>Mountain Wave:</strong> Rotor Zone อันตรายมากใต้ Wave / สูงสุด Severe–Extreme / Wave ขึ้นถึง FL450+ บริเวณ Rockies, Alps, Himalayas / ห้ามบินใต้ยอด Ac Lenticularis</div></div>
+</div>
+
+<hr class="dv">
+<div class="sub-hd">📋 PIREP — วิธีรายงาน Turbulence</div>
+<div class="mono">UA /OV BKK120025 /TM 0340Z /FL350 /TP B777
+/TB SEV /RM SEVERE TURB FOR 5 MIN NEAR JET CORE
+SUGGEST FL390 SMOOTH</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>UUA (Urgent)</strong> — SEV หรือ EXTRM TURB → ส่ง UUA ทันที ผ่าน ATC / ACARS / ไม่รอ Routine</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Dispatcher รับ PIREP:</strong> Update Crew เที่ยวต่อ / แจ้ง Crew-in-flight ผ่าน ACARS / Update SIGWX Briefing / รายงาน MWO ถ้า SEV+</div></div>
+</div>
+
+<div class="sub-hd">🔥 CAT Hotspots ในเอเชีย</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>เส้นทาง</th><th>โซน CAT</th><th>FL</th><th>ฤดู</th></tr></thead>
+<tbody>
+<tr><td>BKK–NRT</td><td>Japan Jet / Pacific Jet</td><td>FL330–FL400</td><td>ฤดูหนาว Nov–Mar แรงมาก</td></tr>
+<tr><td>Asia–Europe</td><td>Himalayas / Tibetan Plateau</td><td>FL350–FL430</td><td>ตลอดปี / ฤดูหนาวแรงกว่า</td></tr>
+<tr><td>Trans-Pacific</td><td>Pacific Jet Core</td><td>FL320–FL390</td><td>ฤดูหนาว / ใกล้ Dateline</td></tr>
+<tr><td>BKK–KUL–SIN</td><td>ITCZ Convection</td><td>FL100–FL200</td><td>ฤดูมรสุม Thermal Turb</td></tr>
+</tbody></table></div>
+</div>`},
+
+/* ── 07 ── */
+{num:"07",title:"Icing",sub:"ประเภท เงื่อนไข ผลกระทบ และการรับมือ",
+desc:"Icing ทุกแบบ เงื่อนไขการเกิด ผลต่อ Performance และ Fuel ที่ Dispatcher/Met/นักบินต้องทราบ",
+html:`<div class="sec-body">
+<div class="sub-hd">❄ เงื่อนไขเกิด Icing — ต้องครบทั้งสอง</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>เงื่อนไข</th><th>รายละเอียด</th><th>หมายเหตุ</th></tr></thead>
+<tbody>
+<tr><td>Visible Moisture</td><td>เมฆ / ฝน / Drizzle / Freezing Rain</td><td>ต้องมี Supercooled Liquid Water (SLW) / Ice Crystal ไม่เกาะ</td></tr>
+<tr><td>OAT ช่วง Icing</td><td>0°C ถึง −40°C</td><td>0 ถึง −20°C คือโซนหลัก / SLD พบถึง −40°C / &lt;−40°C = Ice Crystal ทั้งหมด</td></tr>
+</tbody></table></div>
+<div class="hl-box"><strong>Supercooled Large Droplets (SLD)</strong> — พบในบริเวณที่มีหยดน้ำขนาดใหญ่ &gt;50 μm / กระทบ Airfoil ไกลกว่าจุดที่ De-ice ปกป้อง → Clear Ice ด้านหลัง Protected Zone / อันตรายมากกว่า Rime</div>
+
+<hr class="dv">
+<div class="sub-hd">🧊 3 ประเภทน้ำแข็ง</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ประเภท</th><th>ลักษณะ</th><th>กลไก</th><th>OAT</th><th>อันตราย</th></tr></thead>
+<tbody>
+<tr><td>Rime Ice</td><td>ขาวขุ่น เปราะ ผิวขรุขระ</td><td>Small Droplets แข็งทันทีที่กระทบ</td><td>−10 ถึง −20°C</td><td>ปานกลาง / เปราะแตกออกได้</td></tr>
+<tr><td>Clear Ice (Glaze)</td><td>โปร่งใส แข็งมาก เกาะแน่น</td><td>Large Droplets ไหลก่อนแข็ง</td><td>0 ถึง −10°C</td><td>สูงสุด / ครอบ Airfoil กว้าง</td></tr>
+<tr><td>Mixed Ice</td><td>ผสมทั้งขาวขุ่น+โปร่งใส</td><td>Droplet หลายขนาดผสมกัน</td><td>−5 ถึง −15°C</td><td>สูง / ยากต่อการ De-ice</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">📊 ระดับ Icing และ Action</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ระดับ</th><th>อัตราสะสม</th><th>Dispatcher</th><th>นักบิน</th><th>Met</th></tr></thead>
+<tbody>
+<tr><td>Trace</td><td>น้อยมาก</td><td>บันทึกใน Brief</td><td>เปิด Anti-ice ป้องกัน</td><td>ระบุใน SIGWX</td></tr>
+<tr><td>Light</td><td>ช้า ปลอดภัยถ้า De-ice ทำงาน</td><td>ตรวจ Anti-ice system OK</td><td>เปิด Anti-ice ตลอด</td><td>ระบุ FL ที่พบ</td></tr>
+<tr><td>Moderate</td><td>เร็ว De-ice รับไหว</td><td>เพิ่ม Fuel 2–5% / แจ้ง Crew</td><td>เปลี่ยน FL ทันที / Anti-ice ทุกระบบ</td><td>ออก SIGMET MOD ICE</td></tr>
+<tr><td>Severe</td><td>เร็วมาก De-ice รับไม่ไหว</td><td>ห้าม Dispatch / แจ้ง Ops</td><td>Emergency / ออกจากโซนทันที</td><td>ออก SIGMET SEV ICE</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">📉 ผลต่อ Performance — Dispatcher ต้องคำนวณ</div>
+<div class="items">
+<div class="item"><span class="ico">↑</span><div><strong>Drag เพิ่ม 20–40%</strong> — Airfoil เปลี่ยนรูป / Stall Speed เพิ่ม / Buffet ที่ AOA ต่ำลง</div></div>
+<div class="item"><span class="ico">↑</span><div><strong>Fuel Burn เพิ่ม 2–5%</strong> — Engine Anti-ice ใช้ Bleed Air ~5–8% Thrust / Wing Anti-ice เพิ่มอีก</div></div>
+<div class="item"><span class="ico">↓</span><div><strong>Max Cruise Altitude ลด</strong> — Drag สูง + Thrust ลด (Anti-ice) / อาจต้อง Step Down</div></div>
+<div class="item"><span class="ico">⚠</span><div><strong>Pitot/Static Error</strong> — Airspeed/Alt ผิดถ้า Pitot Heat ล้มเหลว / ต้องตรวจก่อน Flight always</div></div>
+<div class="item"><span class="ico">⚠</span><div><strong>Prop Icing (Turboprop)</strong> — Ice ที่ Blade → Vibration + Weight imbalance / สำคัญมากสำหรับ ATR72, Q400</div></div>
+</div>
+
+<div class="sub-hd">🔍 Met ต้องระบุในรายงาน</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>Freezing Level</strong> — ระดับ 0°C จาก Sounding / SIGWX แสดงเส้น Freezing Level / ต่ำในฤดูหนาว สูงในฤดูร้อน</div></div>
+<div class="item"><span class="ico">›</span><div><strong>SIGMET SEV ICE</strong> — ออกเมื่อ SEV Icing นอก CB / ระบุ FL และพื้นที่ชัดเจน / Valid 4 ชม.</div></div>
+<div class="item"><span class="ico">›</span><div><strong>In-cloud Icing vs Freezing Rain</strong> — Freezing Rain (FZRA) อันตรายกว่ามาก / Clear Ice เกาะทันทีที่กระทบ</div></div>
+</div>
+</div>`},
+
+/* ── 08 ── */
+{num:"08",title:"Fronts & Air Mass",sub:"มวลอากาศ แนวปะทะ และ Cold Surge",
+desc:"Air Mass ทุกชนิดในเอเชีย Front 4 ประเภท และ Cold Surge ที่ส่งผลต่อเส้นทางบินในภูมิภาค",
+html:`<div class="sec-body">
+<div class="sub-hd">☁ Air Mass — มวลอากาศในเอเชีย</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Air Mass</th><th>Code</th><th>แหล่งกำเนิด</th><th>คุณสมบัติ</th><th>ผลต่อเส้นทาง</th></tr></thead>
+<tbody>
+<tr><td>Continental Polar</td><td>cP</td><td>ไซบีเรีย / มองโกเลีย</td><td>เย็นมาก แห้ง เสถียร</td><td>Cold Surge ฤดูหนาว / ทำให้ Front แนว BKK–HAN–HKG</td></tr>
+<tr><td>Maritime Polar</td><td>mP</td><td>N. Pacific / N. Atlantic</td><td>เย็น ชื้นปานกลาง</td><td>Trans-Pacific routes / Mixed Icing</td></tr>
+<tr><td>Maritime Tropical</td><td>mT</td><td>มหาสมุทรเขตร้อน</td><td>อุ่น ชื้นมาก ไม่เสถียร</td><td>CB ฤดูมรสุม / ITCZ / ฝนหนัก</td></tr>
+<tr><td>Continental Tropical</td><td>cT</td><td>ทะเลทราย Sahara, Arabia</td><td>ร้อนมาก แห้ง เสถียร</td><td>Haze / Dust BKK–DXB / VIS ต่ำ</td></tr>
+<tr><td>Maritime Equatorial</td><td>mE</td><td>เส้นศูนย์สูตร</td><td>อุ่นชื้นมาก ไม่เสถียรสูง</td><td>ITCZ / CB ตลอดปี / Monsoon Trough</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">❄ Cold Surge — สำคัญสำหรับเอเชียตะวันออกเฉียงใต้</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>กลไก</strong> — Siberian High ทวีกำลัง → H &gt;1,040 hPa / อากาศ cP รุกลงใต้ผ่าน China → South China Sea → ไทย Vietnam ฟิลิปปินส์ / พบ พ.ย.–ก.พ.</div></div>
+<div class="item"><span class="ico">›</span><div><strong>สัญญาณบอกเหตุ</strong> — Siberian High ทวีกำลัง / 850 hPa Wind เปลี่ยนเป็น N–NE แรง / Sea Surface Temperature ลด / Cold Front ชัดเจนบน SIGWX</div></div>
+<div class="item"><span class="ico">›</span><div><strong>ผลต่อการบิน</strong> — CB ตามแนว Cold Front / ทัศนวิสัยลดภาคเหนือไทย / Sea Fog ใน SCS / ฝนตกที่ DMK CNX เชียงราย / Convective Turb</div></div>
+<div class="item"><span class="ico">✈</span><div><strong>Dispatcher Action</strong> — ติดตาม 850 hPa Chart / ตรวจ SIGWX Front position / เพิ่ม Fuel ถ้า Front เข้า Destination / เตรียม Alternate</div></div>
+</div>
+
+<hr class="dv">
+<div class="sub-hd">↔ 4 ประเภท Front — ครบสำหรับ 3 กลุ่ม</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Front</th><th>กลไก</th><th>เคลื่อน</th><th>สัญลักษณ์</th><th>สภาพอากาศ</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td>Cold Front</td><td>อากาศเย็นรุก</td><td>25–35 kt</td><td style="color:#2d6bc4">▶▶▶ น้ำเงิน</td><td>CB / Wind Shear / ทัศนวิสัยลดฉับพลัน</td><td>เลี่ยงหรือรอ Front ผ่าน</td></tr>
+<tr><td>Warm Front</td><td>อากาศอุ่นไต่ขึ้น</td><td>10–15 kt</td><td style="color:#c0392b">●●● แดง</td><td>As Ns Icing / ฝนต่อเนื่อง / IFR</td><td>ขึ้น FL สูง / IFR Approach</td></tr>
+<tr><td>Occluded</td><td>Cold ไล่ทัน Warm</td><td>ผันแปร</td><td style="color:#7b5ea7">▶●▶● ม่วง</td><td>Icing + Turb พร้อมกัน / ซับซ้อน</td><td>ต้องการ Alternate แน่นอน</td></tr>
+<tr><td>Stationary</td><td>แนวปะทะนิ่ง</td><td>&lt;5 kt</td><td>สลับน้ำเงิน-แดง</td><td>IFR ต่อเนื่องหลายวัน</td><td>ติดตาม TAF ถี่ขึ้น</td></tr>
+</tbody></table></div>
+
+<div class="sub-hd">📡 การวิเคราะห์ Front สำหรับ Met</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>ระบุตำแหน่ง Front</strong> — บริเวณที่ Isobar หักมุม (Kink) / อุณหภูมิและ Dew Point เปลี่ยนฉับพลัน / Wind Shift / Pressure Tendency ลด</div></div>
+<div class="item"><span class="ico">›</span><div><strong>คาดการณ์การเคลื่อน</strong> — Cold Front เคลื่อนตาม 700 hPa Wind / ดู Series SIGWX 2 ช่วงเวลา (เช่น 00Z vs 06Z) เพื่อหา Speed และ Direction</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Frontal Intensity</strong> — ΔT ข้ามแนว Front สูง = Front แรง / CB มากขึ้น / Wind Shear รุนแรงขึ้น</div></div>
+</div>
+</div>`},
+
+/* ── 09 ── */
+{num:"09",title:"Tropical Weather",sub:"TC, ITCZ, Monsoon & Typhoon Avoidance",
+desc:"สภาพอากาศเขตร้อนครบถ้วน — พายุหมุน ITCZ Monsoon และกลยุทธ์หลีกเลี่ยงสำหรับ 3 กลุ่ม",
+html:`<div class="sec-body">
+<div class="sub-hd">🌀 Tropical Cyclone — การจำแนกและการหลีกเลี่ยง</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ระดับ</th><th>ลมสูงสุด</th><th>ความกดใจกลาง</th><th>ระยะเลี่ยงขั้นต่ำ</th><th>Dispatcher</th></tr></thead>
+<tbody>
+<tr><td>Tropical Depression</td><td>&lt;34 kt</td><td>≤1000 hPa</td><td>200 nm</td><td>Monitor ทุก 6 ชม.</td></tr>
+<tr><td>Tropical Storm</td><td>34–63 kt</td><td>985–1000 hPa</td><td>300 nm</td><td>SIGMET ออกแล้ว / เตรียม Reroute</td></tr>
+<tr><td>Typhoon / Hurricane</td><td>64–99 kt</td><td>940–985 hPa</td><td>400–500 nm</td><td>Reroute + Extra Fuel</td></tr>
+<tr><td>Super Typhoon</td><td>≥100 kt</td><td>&lt;940 hPa</td><td>500+ nm เด็ดขาด</td><td>Reroute + ตรวจ Alternate ปลอดภัย</td></tr>
+</tbody></table></div>
+<div class="hl-box"><strong>Wind Radii:</strong> TC มี Radius 34-kt / 50-kt / 64-kt Wind / ต้องระวังทั้ง Radius ไม่ใช่แค่ Center distance / Right Semicircle อันตรายกว่า Left เสมอ (N.Hemisphere)</div>
+
+<hr class="dv">
+<div class="sub-hd">🌀 โครงสร้าง Tropical Cyclone</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>Eye</strong> — ใจกลาง เงียบ ลมสงบ ฟ้าใส / เส้นผ่าศูนย์กลาง 10–100+ nm / อย่าหลงคิดว่าพ้นอันตราย</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Eye Wall</strong> — แนว CB รุนแรงที่สุด รอบ Eye / ลมแรงสุด / SEV–EXTRM Turb / Hail / ห้ามบินผ่าน</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Rain Bands</strong> — แนว CB วนรอบนอก / ยังอันตราย / ลมและฝนแรง</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Right Semicircle (N.Hemi.)</strong> — ลมรวมกับ Storm Motion → แรงกว่า Left / TC เคลื่อน N → Right = East / หลีกเลี่ยง Right Side เพิ่มเติม</div></div>
+</div>
+
+<hr class="dv">
+<div class="sub-hd">🌧 ITCZ — Inter Tropical Convergence Zone</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>กลไก</strong> — แนวที่ Trade Winds N และ S มาบรรจบ / อากาศลอยตัวขึ้น → CB / เคลื่อนตาม Sun (N ใน Summer S ใน Winter)</div></div>
+<div class="item"><span class="ico">›</span><div><strong>ตำแหน่งในเอเชีย</strong> — ช่วง Monsoon ขึ้นเหนือถึง ~15–20°N ใน Jul–Aug / ลงใต้ Jan–Feb / ส่งผลเส้นทาง BKK–SIN, CGK–BKK</div></div>
+<div class="item"><span class="ico">›</span><div><strong>ผลต่อการบิน</strong> — FRQ/EMBD CB ใน ITCZ / ทำนายยากตรง / ดู Satellite ร่วม SIGWX / PIREP จากเที่ยวก่อนสำคัญมาก</div></div>
+</div>
+
+<hr class="dv">
+<div class="sub-hd">🌧 Monsoon — ฤดูมรสุมเอเชีย</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>มรสุม</th><th>ช่วงเวลา</th><th>ทิศลม</th><th>ผลต่อการบิน</th></tr></thead>
+<tbody>
+<tr><td>Southwest Monsoon</td><td>พ.ค.–ต.ค.</td><td>SW จากมหาสมุทร</td><td>CB ฝนหนัก / ITCZ ขึ้นเหนือ / Runway Wet</td></tr>
+<tr><td>Northeast Monsoon</td><td>พ.ย.–ก.พ.</td><td>NE จากจีน</td><td>Cold Surge / Haze ภาคเหนือ / ทะเลจีนใต้หยาบ</td></tr>
+<tr><td>Monsoon Trough</td><td>ฤดูฝน</td><td>แนวพาดตามแนว N-S</td><td>CB เรียงแนว / ฝนหนักตาม Trough / TD พัฒนาได้</td></tr>
+</tbody></table></div>
+
+<div class="sub-hd">✈ Dispatcher — Typhoon Workflow</div>
+<div class="steps">
+<div class="step"><div class="snum">1</div><div class="sbod"><strong>ติดตาม JTWC/JMA/TMD ทุก 6 ชม.</strong> — Plot TC Center บน Route chart / ดู Forecast Track 24/48/72h</div></div>
+<div class="step"><div class="snum">2</div><div class="sbod"><strong>ตรวจ Uncertainty Cone</strong> — Track Error ±100–200 nm / ถือว่า Entire Cone อันตราย</div></div>
+<div class="step"><div class="snum">3</div><div class="sbod"><strong>Reroute ให้ห่างตาม Category</strong> — ดู Wind Radii / หลีกเลี่ยง Right Semicircle เป็นพิเศษ</div></div>
+<div class="step"><div class="snum">4</div><div class="sbod"><strong>คำนวณ Extra Fuel</strong> — Distance Reroute + Contingency เพิ่ม + Holding ที่ Destination / Alternate ใหม่นอก TC zone</div></div>
+<div class="step"><div class="snum">5</div><div class="sbod"><strong>Monitor ระหว่าง Flight</strong> — Update ACARS ถ้า Track เปลี่ยน / Ready Diversion plan</div></div>
+</div>
+</div>`},
+
+/* ── 10 ── */
+{num:"10",title:"Upper Wind Analysis",sub:"Wind Aloft, Temperature & Optimum Level",
+desc:"การวิเคราะห์ลมและอุณหภูมิระดับสูง Optimum Level Selection และ Cost Index — ใช้ทุกวันใน Dispatch",
+html:`<div class="sec-body">
+<div class="sub-hd">🌬 แหล่งข้อมูล Upper Wind</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>แหล่ง</th><th>ความถี่</th><th>ข้อมูล</th><th>ใช้งาน</th></tr></thead>
+<tbody>
+<tr><td>Radiosonde (Sounding)</td><td>00Z / 12Z ทุกวัน</td><td>T, Td, Wind, P ทุกระดับ</td><td>Freezing Level / Icing Zone / Stability</td></tr>
+<tr><td>NWP Model (GFS/ECMWF)</td><td>ทุก 6 ชม.</td><td>Wind T RH ทุก FL</td><td>Flight Planning / OFP / Fuel Calc</td></tr>
+<tr><td>WAFC GRIB2</td><td>ทุก 6 ชม.</td><td>FL050–FL650</td><td>Dispatcher: Download ก่อน Dispatch</td></tr>
+<tr><td>PIREP</td><td>ตลอดวัน</td><td>Wind จริง ณ Position/FL</td><td>ยืนยัน Model / Update Crew</td></tr>
+<tr><td>Aircraft Downlink (AMDAR)</td><td>ทุกชม. จาก Airlines</td><td>T, Wind ที่ Cruise FL</td><td>Met: Update Forecast</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">✈ Optimum Level Selection</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>หลักการ</strong> — เลือก FL ที่ Net Wind Component ดีที่สุด สมดุลกับ Cost Index / FL สูง = Headwind น้อย แต่ FF/nm เพิ่มเล็กน้อย (อากาศบาง Engine ทำงานหนักกว่า)</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Step Climb</strong> — เริ่ม FL Low แล้ว Step ขึ้นเมื่อ Weight ลด (Fuel burn) / ทั่วไปขึ้น 2,000 ft ทุก 2–4 ชม. / ต้องตรวจ Upper Wind แต่ละ FL</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Drift Down Level</strong> — FL ต่ำสุดที่บินได้ถ้า Engine Fail / ต้องสูงกว่า MEA / Dispatcher ต้องตรวจ Enroute Terrain</div></div>
+</div>
+<div class="mono">ตัวอย่าง: BKK–NRT Jan, Polar Jet เหนือ Japan
+FL360: HW 80 kt → Ground Speed 420 kt, FF 9.2 t/hr
+FL380: HW 30 kt → Ground Speed 470 kt, FF 9.0 t/hr  (Tailwind region)
+FL400: TW 60 kt → Ground Speed 540 kt, FF 8.8 t/hr  ← Optimum
+→ เลือก FL400 ประหยัด Fuel ~3% และ เร็วกว่า 30 นาที</div>
+
+<hr class="dv">
+<div class="sub-hd">📊 Fuel Impact จาก Wind</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Wind Component</th><th>Effect on Trip Fuel</th><th>Effect on ETA</th></tr></thead>
+<tbody>
+<tr><td>Headwind 50 kt</td><td>เพิ่ม ~8–10%</td><td>ช้าลง ~15–25 min (long haul)</td></tr>
+<tr><td>Headwind 100 kt</td><td>เพิ่ม ~18–22%</td><td>ช้าลง ~40–60 min</td></tr>
+<tr><td>Tailwind 50 kt</td><td>ลด ~6–8%</td><td>เร็วขึ้น ~12–20 min</td></tr>
+<tr><td>Tailwind 100 kt</td><td>ลด ~12–15%</td><td>เร็วขึ้น ~30–50 min</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">💰 Cost Index (CI) Management</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>CI คืออะไร</strong> — อัตราส่วน Time Cost / Fuel Cost (kg/min) / CI สูง = เน้นเวลา บิน Fast / CI ต่ำ = เน้น Fuel ประหยัด บิน Slow</div></div>
+<div class="item"><span class="ico">›</span><div><strong>CI กับ Wind</strong> — Strong Tailwind → CI ต่ำลงได้ (Fuel ถูกอยู่แล้ว) / Strong Headwind → CI สูงขึ้นเพื่อชดเชย ETA / Dispatcher แจ้ง CI ในแต่ละ Sector</div></div>
+<div class="item"><span class="ico">›</span><div><strong>ECON Speed</strong> — Speed ที่คำนวณจาก CI / นักบินเลือก ECON, LRC, MRC ได้ตาม OFP / Weather (Turb) อาจต้องลด Speed ลง</div></div>
+</div>
+</div>`},
+
+/* ── 11 ── */
+{num:"11",title:"Aviation Weather Reports",sub:"METAR / TAF / SPECI / PIREP / VOLMET",
+desc:"ผลิตภัณฑ์อุตุนิยมวิทยาครบทุกประเภท — อ่านได้ แปลได้ และรู้ว่าแต่ละส่วนใช้ตัดสินใจอะไร",
+html:`<div class="sec-body">
+<div class="sub-hd">📋 METAR — แยกส่วนทุก Field</div>
+<div class="mono">VTBS 150700Z 18012KT 150V210 7000 -TSRA
+FEW010CB SCT020 BKN080 29/25 Q1006
+WS R01L RERA TEMPO BECMG=</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Field</th><th>ตัวอย่าง</th><th>ความหมาย</th><th>Dispatcher/นักบินใช้</th></tr></thead>
+<tbody>
+<tr><td>Station</td><td>VTBS</td><td>ICAO Code สนามบิน</td><td>ระบุสนามบิน</td></tr>
+<tr><td>Time</td><td>150700Z</td><td>วันที่ 15 เวลา 07:00 UTC</td><td>ความทันสมัยของข้อมูล</td></tr>
+<tr><td>Wind</td><td>18012KT 150V210</td><td>ทิศ 180° 12 kt แปรปรวน 150–210°</td><td>Runway / XW / T-O Performance</td></tr>
+<tr><td>Visibility</td><td>7000</td><td>7,000 m</td><td>เทียบ CAT Minima</td></tr>
+<tr><td>Weather</td><td>-TSRA</td><td>ฝนฟ้าคะนองเบา</td><td>Hazard / Alternate decision</td></tr>
+<tr><td>Cloud</td><td>FEW010CB SCT020 BKN080</td><td>FEW CB ที่ 1,000ft / SCT ที่ 2,000ft / Ceiling BKN ที่ 8,000ft</td><td>Ceiling vs DH / CB alert</td></tr>
+<tr><td>T/Td</td><td>29/25</td><td>29°C / Dew Point 25°C → Spread 4°C</td><td>ISA Dev / Icing risk</td></tr>
+<tr><td>QNH</td><td>Q1006</td><td>1006 hPa</td><td>Altimeter setting</td></tr>
+<tr><td>WS</td><td>WS R01L</td><td>Wind Shear รายงานบน RWY 01L</td><td>Pilot: ระวัง Approach / นักบินต้อง Go-around ready</td></tr>
+<tr><td>RERA</td><td>RERA</td><td>Recent Rain เพิ่งหยุด</td><td>Runway contamination possible</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">📅 TAF — อ่านและแปลความ</div>
+<div class="mono">TAF AMD VTBS 150500Z 1506/1612 18010KT 9999 FEW025
+  TEMPO 1508/1512 3000 TSRA FEW010CB BKN025
+  BECMG 1514/1516 22015KT
+  PROB40 TEMPO 1518/1520 1200 SHRA BKN008
+  FM160000 15008KT 9999 SCT030=</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Element</th><th>ความหมาย</th><th>Dispatcher Decision</th></tr></thead>
+<tbody>
+<tr><td>AMD</td><td>Amendment — แก้ไขจาก TAF เดิม</td><td>ต้องใช้ AMD แทน Original ทันที</td></tr>
+<tr><td>1506/1612</td><td>Valid วันที่ 15 06Z ถึง วันที่ 16 12Z</td><td>ตรวจว่าครอบ ETA ±1 ชม.</td></tr>
+<tr><td>TEMPO 1508/1512</td><td>เปลี่ยนชั่วคราว &lt;1 ชม./ครั้ง ในช่วง 0800–1200Z</td><td>TSRA+CB → ต้องเลือก Alternate</td></tr>
+<tr><td>BECMG 1514/1516</td><td>เปลี่ยนถาวรระหว่าง 1400–1600Z</td><td>หลัง 1600Z ลมเปลี่ยนเป็น 22015KT</td></tr>
+<tr><td>PROB40 TEMPO</td><td>โอกาส 40% เปลี่ยนชั่วคราว</td><td>พิจารณาเหมือน TEMPO ตาม Ops Spec</td></tr>
+<tr><td>FM160000</td><td>เปลี่ยนฉับพลัน ณ วันที่ 16 00:00Z</td><td>Forecast ใหม่จากจุดนี้</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">⚡ SPECI — สำคัญสำหรับ Real-time Monitor</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>ออกเมื่อ:</strong> Visibility ลดหรือเพิ่มผ่าน Threshold (550/800/1,500/3,000/5,000 m) / Wind Gust เพิ่มหรือลด &gt;10 kt / CB เริ่มหรือสิ้นสุด / Ceiling เปลี่ยนผ่าน 100/200/500/1,000/1,500 ft</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Dispatcher ต้องใช้:</strong> SPECI ล่าสุด = สภาพปัจจุบันจริง / ถ้า SPECI ต่ำกว่า Minima → Review Dispatch decision / แจ้ง Crew ผ่าน ACARS</div></div>
+</div>
+
+<hr class="dv">
+<div class="sub-hd">👨‍✈️ PIREP — วิธีอ่านและใช้งาน</div>
+<div class="mono">UUA /OV HKG090045 /TM 0215Z /FL350 /TP A350
+/SK OVC FL330 TOP FL410 /TA -52 /WV 28090KT
+/TB SEV /IC MOD CLEAR /RM SEV TURB 10MIN
+SUGGEST FL390 OR FL310</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Field</th><th>ค่า</th><th>ความหมาย</th></tr></thead>
+<tbody>
+<tr><td>UUA</td><td>—</td><td>Urgent PIREP — ส่งทันที (SEV+ Turb/Ice)</td></tr>
+<tr><td>OV</td><td>HKG090045</td><td>ตำแหน่ง 045 nm ทิศ 090° จาก HKG VOR</td></tr>
+<tr><td>FL</td><td>FL350</td><td>ระดับบินที่พบ</td></tr>
+<tr><td>TP</td><td>A350</td><td>Aircraft Type</td></tr>
+<tr><td>SK</td><td>OVC FL330 TOP FL410</td><td>เมฆ OVC ฐาน FL330 ยอด FL410</td></tr>
+<tr><td>TB</td><td>SEV</td><td>Turbulence รุนแรง</td></tr>
+<tr><td>IC</td><td>MOD CLEAR</td><td>Icing ปานกลาง ประเภท Clear Ice</td></tr>
+</tbody></table></div>
+<div class="hl-box"><strong>PIREP ≤1 ชม. คือข้อมูลที่น่าเชื่อถือที่สุด</strong> — Met ใช้ Update Forecast / Dispatcher แจ้ง Crew ต่อไป / นักบินรับแล้วเตรียม Action ก่อนเข้าโซน</div>
+</div>`},
+
+/* ── 12 ── */
+{num:"12",title:"SIGWX Charts",sub:"การอ่าน วิเคราะห์ และข้อจำกัด",
+desc:"SIGWX 3 ระดับ สัญลักษณ์ทุกตัว วิธีอ่านอย่างเป็นระบบ และข้อจำกัดที่ต้องรู้",
+html:`<div class="sec-body">
+<div class="sub-hd">📊 SIGWX 3 ระดับ</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ประเภท</th><th>ระดับ</th><th>Valid Period</th><th>ออกโดย</th><th>ใช้สำหรับ</th></tr></thead>
+<tbody>
+<tr><td>Low Level SIGWX</td><td>Surface–FL100</td><td>6–9 ชม.</td><td>Regional MWO</td><td>GA / Helicopter / Low-level</td></tr>
+<tr><td>Mid Level SIGWX</td><td>FL100–FL250</td><td>6–9 ชม.</td><td>Regional MWO</td><td>Regional Jets / Turboprops</td></tr>
+<tr><td>High Level SIGWX</td><td>FL250–FL630</td><td>12–24 ชม.</td><td>WAFC London/Washington</td><td>Long-haul Jets ทุกเส้นทาง</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">🔣 สัญลักษณ์ SIGWX — ครบทุกตัว</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>สัญลักษณ์</th><th>ความหมาย</th><th>Action สำหรับ 3 กลุ่ม</th></tr></thead>
+<tbody>
+<tr><td>EMBD CB FL080/FL450</td><td>CB ซ่อนในเมฆ 8,000–45,000 ft</td><td>Disp: Extra Fuel + เตือน Crew / นักบิน: เปิด Radar ตลอด / Met: ออก SIGMET</td></tr>
+<tr><td>FRQ CB</td><td>CB มากกว่า 50% พื้นที่</td><td>Disp: Reroute + Extra Fuel 10–15% / นักบิน: หลีกเลี่ยง / Met: ติดตาม Satellite</td></tr>
+<tr><td>OCNL CB</td><td>CB 25–50%</td><td>Disp: พิจารณา Reroute / นักบิน: Radar + เลี่ยง</td></tr>
+<tr><td>ISOL CB</td><td>CB น้อยกว่า 25% กระจาย</td><td>Disp: Extra Fuel เล็กน้อย / นักบิน: Radar</td></tr>
+<tr><td>SEV TURB FL350/390</td><td>Turbulence รุนแรง FL350–390</td><td>Disp: แนะ Crew ปรับ FL / นักบิน: Belt Sign + Va / Met: ออก SIGMET SEV TURB</td></tr>
+<tr><td>MOD TURB FL300/350</td><td>Turbulence ปานกลาง</td><td>Disp: แจ้ง Crew / นักบิน: Belt Sign</td></tr>
+<tr><td>SEV ICE FL060/120</td><td>Icing รุนแรง 6,000–12,000 ft</td><td>Disp: ห้าม Dispatch ในโซน / นักบิน: Emergency หลีกเลี่ยง</td></tr>
+<tr><td>MOD ICE FL080/150</td><td>Icing ปานกลาง</td><td>Disp: Anti-ice + Extra Fuel 2–5% / นักบิน: เปิด Anti-ice ทุกระบบ</td></tr>
+<tr><td>JET STR FL340 150KT</td><td>Jet Stream FL340 ลม 150 kt</td><td>Disp: วางแผน Tailwind / ระวัง CAT ขอบ Jet</td></tr>
+<tr><td>≈≈≈ MWT FL150/FL450</td><td>Mountain Wave Turbulence</td><td>Disp: แจ้ง Crew / นักบิน: ระวัง Rotor Zone</td></tr>
+<tr><td>L 998 / H 1028</td><td>Pressure Center (hPa)</td><td>Met/Disp: Synoptic Analysis / ลมรอบระบบ</td></tr>
+<tr><td>⊕ TYPHOON SURIGAE</td><td>TC พร้อมชื่อ + Track 24/48h</td><td>Disp: Reroute ทันที ตาม Track + Uncertainty Cone</td></tr>
+<tr><td>🌋 VA FL100/FL350</td><td>Volcanic Ash ระบุ FL</td><td>Disp: Zero Tolerance Reroute / Met: ติดตาม VAAC</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">📖 วิธีอ่าน SIGWX อย่างเป็นระบบ (สำหรับ Dispatcher)</div>
+<div class="steps">
+<div class="step"><div class="snum">1</div><div class="sbod"><strong>ตรวจ Valid Time ก่อนเสมอ</strong> — SIGWX เก่าเกิน 3 ชม. ควรอัปเดต / ดูว่าครอบ ETD ถึง ETA</div></div>
+<div class="step"><div class="snum">2</div><div class="sbod"><strong>Plot Route บน SIGWX</strong> — ทั้ง Planned Route และ Alternate Route ±200 nm</div></div>
+<div class="step"><div class="snum">3</div><div class="sbod"><strong>ระบุ Synoptic Systems</strong> — L / H / Front / TC ที่ส่งผลต่อเส้นทาง</div></div>
+<div class="step"><div class="snum">4</div><div class="sbod"><strong>ตรวจ Hazards ตาม Cruise FL</strong> — CB / Turb / Ice / MWT ที่ FL ที่จะบิน</div></div>
+<div class="step"><div class="snum">5</div><div class="sbod"><strong>วิเคราะห์ Jet Stream</strong> — Tailwind/Headwind / CAT ขอบ Jet / Optimum FL</div></div>
+<div class="step"><div class="snum">6</div><div class="sbod"><strong>ยืนยันด้วย METAR/PIREP/Radar</strong> — SIGWX คือ Forecast เท่านั้น ต้องยืนยัน</div></div>
+</div>
+<div class="al al-w"><span class="al-icon">⚠</span><div><strong>ข้อจำกัดสำคัญ:</strong> SIGWX แสดง "คาดการณ์" ณ Valid Time / CB อาจเปลี่ยนภายใน 1 ชม. / ต้องใช้ร่วม METAR+PIREP+Satellite+Radar เสมอ / ห้ามตัดสินใจจาก SIGWX อย่างเดียว</div></div>
+</div>`},
+
+/* ── 13 ── */
+{num:"13",title:"SIGMET & AIRMET",sub:"Significant & Airmen's Met Info",
+desc:"SIGMET และ AIRMET ครบถ้วน — วิธีอ่าน ความหมาย Validity และการ Monitor ตลอด Flight Watch",
+html:`<div class="sec-body">
+<div class="sub-hd" style="color:#c0392b">🚨 SIGMET — อันตรายร้ายแรง</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ประเภท SIGMET</th><th>เงื่อนไขออก</th><th>Validity</th><th>Dispatcher Action</th></tr></thead>
+<tbody>
+<tr><td>SEV/EXTRM Turbulence</td><td>SEV+ Turb นอก CB / Wind Shear แรง</td><td>4 ชม.</td><td>แจ้ง Crew ผ่าน ACARS / พิจารณาปรับ FL</td></tr>
+<tr><td>SEV Icing</td><td>SEV Icing นอก CB</td><td>4 ชม.</td><td>ห้าม Dispatch ในโซน / รายงาน Ops</td></tr>
+<tr><td>Tropical Cyclone</td><td>TC ระดับ TS ขึ้นไปใน FIR</td><td>6 ชม.</td><td>Reroute / Extra Fuel / Alt ใหม่</td></tr>
+<tr><td>Volcanic Ash</td><td>VA Cloud ใน FIR</td><td>6 ชม.</td><td>Zero Tolerance / Reroute ทันที</td></tr>
+<tr><td>Widespread CB</td><td>FRQ/EMBD CB กว้าง</td><td>4 ชม.</td><td>Extra Fuel / Route Deviation</td></tr>
+<tr><td>Radioactive Cloud</td><td>กรณีพิเศษ</td><td>ตามกำหนด</td><td>ปฏิบัติตาม Authority</td></tr>
+</tbody></table></div>
+
+<div class="sub-hd">📄 ตัวอย่าง SIGMET และการอ่าน</div>
+<div class="mono">WSTH31 VTBB 151200
+SIGMET 3 VALID 151200/151600 VTBB-
+VTBB BANGKOK FIR
+SEV TURB FCST WI N1800 E09800 -
+N2000 E10300 - N1600 E10600 - N1800 E09800
+FL350/FL410 STNR NC=</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ส่วน</th><th>ความหมาย</th></tr></thead>
+<tbody>
+<tr><td>WSTH31</td><td>Message Type (WS=SIGMET) / TH=Thailand / 31=ลำดับ</td></tr>
+<tr><td>VTBB 151200</td><td>ออกโดย Bangkok MWO / วันที่ 15 เวลา 12:00Z</td></tr>
+<tr><td>SIGMET 3</td><td>SIGMET ฉบับที่ 3 ของวัน</td></tr>
+<tr><td>VALID 151200/151600</td><td>มีผล 12:00–16:00Z วันที่ 15</td></tr>
+<tr><td>VTBB BANGKOK FIR</td><td>ครอบคลุม Bangkok FIR</td></tr>
+<tr><td>SEV TURB FCST</td><td>Severe Turbulence คาดการณ์</td></tr>
+<tr><td>WI N1800...E10600</td><td>พื้นที่ภายใน Lat/Lon ที่ระบุ</td></tr>
+<tr><td>FL350/FL410</td><td>ระดับ FL350 ถึง FL410</td></tr>
+<tr><td>STNR NC</td><td>Stationary — No Change</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">⚠ AIRMET — อันตรายปานกลาง Low Level</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ประเภท</th><th>เงื่อนไข</th><th>ระดับ</th><th>Validity</th></tr></thead>
+<tbody>
+<tr><td>MOD Turbulence</td><td>MOD Turb นอก CB</td><td>&lt;FL100</td><td>4–8 ชม.</td></tr>
+<tr><td>MOD Icing</td><td>MOD Icing นอก CB</td><td>&lt;FL100</td><td>4–8 ชม.</td></tr>
+<tr><td>Extensive IFR</td><td>Ceiling &lt;1,000 ft / VIS &lt;3 SM กว้าง</td><td>Low Level</td><td>4–8 ชม.</td></tr>
+<tr><td>Sustained Surface Wind &gt;30 kt</td><td>ลมแรงที่ผิว</td><td>Surface</td><td>4–8 ชม.</td></tr>
+<tr><td>Mountain Obscuration</td><td>ภูเขาถูกเมฆบัง</td><td>Low Level</td><td>4–8 ชม.</td></tr>
+</tbody></table></div>
+<div class="al al-d"><span class="al-icon">⛔</span><div><strong>Flight Watch:</strong> Dispatcher ต้อง Monitor SIGMET ตลอดทุก Active Flight / ถ้า New SIGMET ออกในเส้นทาง → แจ้ง Crew ผ่าน ACARS ทันที / ถ้า VA SIGMET → Diversion plan ทันที</div></div>
+</div>`},
+
+/* ── 14 ── */
+{num:"14",title:"Volcanic Ash",sub:"Zero Tolerance — VAAC & SIGMET",
+desc:"เถ้าภูเขาไฟ — ผลกระทบร้ายแรง กระบวนการ VAAC และขั้นตอนสำหรับ 3 กลุ่ม",
+html:`<div class="sec-body">
+<div class="sub-hd">🌋 ภูเขาไฟที่ส่งผลต่อเส้นทางในเอเชีย</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ภูเขาไฟ</th><th>ประเทศ</th><th>ระดับอันตราย</th><th>เส้นทางที่กระทบ</th><th>VAAC รับผิดชอบ</th></tr></thead>
+<tbody>
+<tr><td>Merapi</td><td>อินโดนีเซีย</td><td>สูง / ระเบิดบ่อย</td><td>CGK, DIY, SOC</td><td>Darwin</td></tr>
+<tr><td>Taal</td><td>ฟิลิปปินส์</td><td>สูง / 2020 ปิด MNL</td><td>MNL, CRK</td><td>Tokyo</td></tr>
+<tr><td>Pinatubo</td><td>ฟิลิปปินส์</td><td>ประวัติสูง (1991)</td><td>MNL + เส้นทางโลก</td><td>Tokyo</td></tr>
+<tr><td>Kelud</td><td>อินโดนีเซีย</td><td>สูง</td><td>MLG, SUB, CGK</td><td>Darwin</td></tr>
+<tr><td>Ruang</td><td>อินโดนีเซีย</td><td>Active 2024</td><td>SE Asia routes</td><td>Darwin</td></tr>
+<tr><td>Sinabung</td><td>อินโดนีเซีย</td><td>Active</td><td>MES, BTJ</td><td>Darwin</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd" style="color:#c0392b">⚠ ผลกระทบต่อเครื่องบิน</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ผลกระทบ</th><th>กลไก</th><th>ความรุนแรง</th></tr></thead>
+<tbody>
+<tr><td>Engine Flameout</td><td>Silicate ละลายใน Combustion Chamber 1,100–1,300°C เคลือบ Turbine Blades</td><td>ร้ายแรงที่สุด / ทุก Engine อาจดับ</td></tr>
+<tr><td>Windshield Abrasion</td><td>Ash ขูด Windshield → ทึบมองไม่เห็น</td><td>สูง / ต้อง ILS Blind landing</td></tr>
+<tr><td>Pitot/Static Blockage</td><td>Ash อุดตัน → Airspeed/Alt ผิด</td><td>สูง / Unreliable Airspeed</td></tr>
+<tr><td>Avionics Contamination</td><td>Ash ละเอียดเข้า Electronic Bay</td><td>ปานกลาง / อาจ Fail หลายระบบ</td></tr>
+<tr><td>Fuel Contamination</td><td>Ash ปนเปื้อนระบบ Fuel</td><td>ปานกลาง</td></tr>
+<tr><td>Radar Invisible</td><td>Ash ไม่สะท้อน Radar Wave</td><td>ตรวจไม่ได้! ต้องพึ่ง VAAC/Satellite</td></tr>
+</tbody></table></div>
+<div class="hl-box"><strong>BA Flight 9 (1982):</strong> B747 บินเข้า Ash Cloud ของ Galunggung อินโดนีเซีย / ทั้ง 4 เครื่องดับ / Windshield ทึบ / ลงจอดได้ที่ Jakarta หลังเครื่องติดได้เอง เพราะ Ash ระบายออกบางส่วน / บทเรียน: ห้ามบินผ่าน VA เด็ดขาด</div>
+
+<hr class="dv">
+<div class="sub-hd">📡 VAAC System — กระบวนการแจ้งเตือน</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>VAAC</th><th>รับผิดชอบพื้นที่</th><th>ออก VAA ทุก</th></tr></thead>
+<tbody>
+<tr><td>Tokyo VAAC</td><td>W.Pacific / Japan / NW Pacific</td><td>6 ชม. / ทันทีเมื่อระเบิด</td></tr>
+<tr><td>Darwin VAAC</td><td>SE Asia / Indonesia / Australia</td><td>6 ชม. / ทันทีเมื่อระเบิด</td></tr>
+<tr><td>Toulouse VAAC</td><td>Europe / N.Africa / Atlantic</td><td>6 ชม.</td></tr>
+<tr><td>Washington VAAC</td><td>Americas</td><td>6 ชม.</td></tr>
+<tr><td>Montreal VAAC</td><td>N.Atlantic / Canada</td><td>6 ชม.</td></tr>
+</tbody></table></div>
+
+<div class="sub-hd">✈ ขั้นตอนสำหรับ 3 กลุ่ม</div>
+<div class="steps">
+<div class="step"><div class="snum">1</div><div class="sbod"><strong>Met:</strong> ติดตาม VAAC VAA ทุก 6 ชม. / ออก VA SIGMET ทันทีถ้ามี VA ใน FIR / ระบุ FL, Area, Movement</div></div>
+<div class="step"><div class="snum">2</div><div class="sbod"><strong>Dispatcher:</strong> ตรวจ VA SIGMET ก่อน Dispatch ทุกเที่ยว / Zero Tolerance = ถ้ามี VA ในเส้นทาง → Reroute ทันที ไม่มีข้อยกเว้น</div></div>
+<div class="step"><div class="snum">3</div><div class="sbod"><strong>นักบิน:</strong> ถ้าเห็น Ash (Brownish/Grey haze, Static discharge, Engine surge) → Power Idle / Descend / Reverse course / Don't restart in Ash cloud</div></div>
+<div class="step"><div class="snum">4</div><div class="sbod"><strong>Extra Fuel:</strong> Reroute distance เพิ่ม → คำนวณ Extra Fuel + Alternate ใหม่ที่ไม่ได้รับผล VA</div></div>
+</div>
+</div>`},
+
+/* ── 15 ── */
+{num:"15",title:"Weather Minima for Dispatch",sub:"Planning / Destination / Alternate / ETOPS",
+desc:"Weather Minima ทุกประเภทที่ Dispatcher ใช้ทุกวัน พร้อม Decision Flow และ Fuel Calculation",
+html:`<div class="sec-body">
+<div class="sub-hd">📐 ประเภท Weather Minima (ICAO Annex 6)</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Minima</th><th>ใช้เมื่อ</th><th>เปรียบกับ</th><th>หมายเหตุ</th></tr></thead>
+<tbody>
+<tr><td>Planning Minima</td><td>ตัดสินใจ Dispatch ก่อน Departure</td><td>TAF ณ ETA ±1 ชม.</td><td>อาจสูงกว่า Operating Minima (Safety buffer)</td></tr>
+<tr><td>Destination Minima</td><td>ลงจอดที่ Destination ได้</td><td>RVR / Vis / Ceiling จริง</td><td>ขึ้นกับ ILS CAT / Aircraft approval</td></tr>
+<tr><td>Alternate Minima</td><td>ใช้ Alternate เป็นทางเลือก</td><td>TAF ณ ETA ที่ Alternate</td><td>ทั่วไป = Approach Minima +200 ft / +800 m</td></tr>
+<tr><td>Takeoff Alternate Minima</td><td>Departure ต่ำกว่า Landing Min</td><td>TAF ณ เวลา Departure</td><td>Takeoff Alt ภายใน 1 ชม. บิน (1 engine)</td></tr>
+<tr><td>ERA / ETOPS Minima</td><td>Enroute Alternate สำหรับ ETOPS</td><td>TAF ณ ETA ที่ ERA</td><td>ETOPS 120/180/240 min threshold</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">✅ Dispatch Decision Flow — 7 ขั้นตอน</div>
+<div class="steps">
+<div class="step"><div class="snum">1</div><div class="sbod"><strong>ตรวจ TAF Destination ณ ETA ±1 ชม.</strong> — รวม TEMPO / PROB40 / ต้องดีกว่า Destination Minima ตลอดช่วง</div></div>
+<div class="step"><div class="snum">2</div><div class="sbod"><strong>ถ้า TEMPO ต่ำกว่า Minima → เลือก Alternate</strong> — แม้ Base Forecast ดี / TEMPO อาจเกิดได้จริง</div></div>
+<div class="step"><div class="snum">3</div><div class="sbod"><strong>ตรวจ Alternate TAF ณ ETA ที่ Alternate</strong> — ต้องดีกว่า Alternate Minima / ถ้า Alternate ก็ TEMPO → หา Second Alternate</div></div>
+<div class="step"><div class="snum">4</div><div class="sbod"><strong>ตรวจ Takeoff Alternate</strong> — Departure TAF ต่ำกว่า Landing Min ไหม / ถ้าใช่ → T/O Alt ภายใน 1 ชม. บิน</div></div>
+<div class="step"><div class="snum">5</div><div class="sbod"><strong>ตรวจ ERA สำหรับ ETOPS</strong> — ERA แต่ละจุดต้องดีกว่า ERA Minima ณ ETA / อยู่ใน ETOPS Time</div></div>
+<div class="step"><div class="snum">6</div><div class="sbod"><strong>คำนวณ Fuel</strong> — Trip + Contingency 5% + Alternate + Final Reserve 30 min + Extra (Hazard/Reroute/HW)</div></div>
+<div class="step"><div class="snum">7</div><div class="sbod"><strong>เซ็น Dispatch Release ร่วมกับ Commander</strong> — ทั้งสองเห็นชอบ Fuel / Route / Alt / Weather / Special Notes</div></div>
+</div>
+
+<hr class="dv">
+<div class="sub-hd">⛽ Fuel Requirement — ครบสูตร</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>Fuel Component</th><th>ปริมาณ</th><th>หมายเหตุ</th></tr></thead>
+<tbody>
+<tr><td>Taxi Fuel</td><td>ตาม Airport / APU time</td><td>ก่อน Takeoff</td></tr>
+<tr><td>Trip Fuel</td><td>TOD ถึง Landing Destination</td><td>รวม Climb/Cruise/Descent</td></tr>
+<tr><td>Contingency Fuel</td><td>ทั่วไป 5% Trip / หรือ 5 min holding</td><td>เผื่อ Routing / Wind error</td></tr>
+<tr><td>Alternate Fuel</td><td>Missed Approach + Destination → Alt</td><td>ถ้าต้องการ Alternate</td></tr>
+<tr><td>Final Reserve</td><td>30 min ที่ Holding FL (Jet)</td><td>ห้ามใช้เด็ดขาดในกรณีปกติ</td></tr>
+<tr><td>Extra Fuel</td><td>ตาม Dispatcher discretion</td><td>Hazard / CB Reroute / HW แรง / Delay คาด</td></tr>
+<tr><td>Tankering Fuel</td><td>ถ้า Fuel ที่ Dest แพงกว่า</td><td>Economics / ต้องคำนวณ W&B</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">📋 ETOPS — Dispatcher ต้องตรวจ</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>ETOPS 120 min</strong> — ERA ทุกจุดต้องอยู่ใน 120 min flying (One Engine) / TAF ERA ดีกว่า ERA Minima</div></div>
+<div class="item"><span class="ico">›</span><div><strong>ETOPS 180/240 min</strong> — ขยายระยะ / ต้องการ Aircraft / Airline / Route Approval พิเศษ</div></div>
+<div class="item"><span class="ico">›</span><div><strong>ETOPS Critical Fuel</strong> — Fuel ที่ต้องมีเพื่อ Divert ถึง ERA ที่ไกลที่สุด One Engine / คำนวณ Worst Point ใน Route</div></div>
+<div class="item"><span class="ico">›</span><div><strong>ERA Weather Check</strong> — ตรวจ TAF ERA ทุกจุดก่อน Dispatch / Update ระหว่าง Flight ถ้า ERA Weather เปลี่ยน</div></div>
+</div>
+<div class="al al-d"><span class="al-icon">⛔</span><div><strong>กฎสูงสุด:</strong> ถ้าสงสัยว่าปลอดภัยพอไหม → เพิ่ม Fuel หรือเพิ่ม Alternate เสมอ / ไม่มี Schedule ใดสำคัญกว่าชีวิต / Delay หรือ Cancel เพราะ Weather = การตัดสินใจที่ถูกต้องและกล้าหาญ</div></div>
+</div>`},
+
+/* ── 16 ── */
+{num:"16",title:"Isobar & ระบบความกดอากาศ",sub:"Isobar / Pressure Systems / Buys Ballot",
+desc:"เส้น Isobar พื้นฐานสำคัญของการวิเคราะห์อากาศ — 3 กลุ่มใช้ต่างมุม",
+html:`<div class="sec-body">
+<div class="sub-hd">📏 Isobar คืออะไร</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>Isobar</strong> — เส้นเชื่อมต่อบริเวณที่มีความกดอากาศเท่ากัน (hPa) / วาดทุก 4 hPa บน SIGWX มาตรฐาน ICAO / เส้นปิดรอบ L หรือ H / ไม่ตัดกัน</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Pressure Gradient</strong> = ΔP / ΔDistance — Isobar ถี่ = Gradient สูง = ลมแรง / เหมือนเส้น Contour บนแผนที่ภูมิประเทศ ยิ่งชันยิ่งลมแรง</div></div>
+</div>
+
+<hr class="dv">
+<div class="sub-hd">📊 การอ่าน Isobar</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ลักษณะ Isobar</th><th>ความหมาย</th><th>ผลต่อการบิน</th><th>ผู้ใช้</th></tr></thead>
+<tbody>
+<tr><td>เส้นถี่ (Spacing แคบ)</td><td>Pressure Gradient สูง</td><td>ลมแรง / Wind Shear / Turb</td><td>Disp: Extra Fuel / นักบิน: ระวัง</td></tr>
+<tr><td>เส้นห่าง (Spacing กว้าง)</td><td>Pressure Gradient ต่ำ</td><td>ลมอ่อน อากาศนิ่ง</td><td>Disp: Fuel ปกติ</td></tr>
+<tr><td>เส้นโค้งแน่น (Curvature)</td><td>Cyclonic/Anticyclonic flow</td><td>ลมเปลี่ยนทิศตาม Curvature</td><td>Met: Vorticity / Fronts</td></tr>
+<tr><td>Isobar หักมุม (Kink)</td><td>ตำแหน่ง Front</td><td>อากาศเปลี่ยนฉับพลัน</td><td>Met/Disp: Front tracking</td></tr>
+<tr><td>Isobar วนรอบ L</td><td>Low Pressure Center</td><td>เมฆ ฝน พายุ</td><td>ทุกกลุ่ม: หลีกเลี่ยง</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">🌀 L และ H — ระบบความกดอากาศ</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>ระบบ</th><th>ซีกเหนือ</th><th>ซีกใต้</th><th>อากาศ</th><th>สภาพอากาศ</th></tr></thead>
+<tbody>
+<tr><td>Low (L) / Cyclone</td><td>ลมหมุนทวนเข็ม ↺</td><td>ลมหมุนตามเข็ม ↻</td><td>ลอยขึ้น</td><td>เมฆ ฝน พายุ / อันตราย</td></tr>
+<tr><td>High (H) / Anticyclone</td><td>ลมหมุนตามเข็ม ↻</td><td>ลมหมุนทวนเข็ม ↺</td><td>จมลง</td><td>ฟ้าใส ลมสงบ / ดีสำหรับบิน</td></tr>
+<tr><td>Col / Saddle</td><td colspan="2">บริเวณระหว่าง L และ H</td><td>แปรผัน</td><td>ไม่แน่นอน / Wind variable</td></tr>
+<tr><td>Trough</td><td colspan="2">แนว Low ยื่นออก</td><td>ลอยขึ้น</td><td>CB / ฝน / Convection</td></tr>
+<tr><td>Ridge</td><td colspan="2">แนว High ยื่นออก</td><td>จมลง</td><td>อากาศดี / ลมน้อย</td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sub-hd">⚖ Buys Ballot Law — ใช้งานจริง</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>ซีกโลกเหนือ:</strong> ยืนหันหน้าเข้าหาลม → Low อยู่ทางซ้าย / High อยู่ทางขวา</div></div>
+<div class="item"><span class="ico">›</span><div><strong>ซีกโลกใต้:</strong> กลับกัน — Low ทางขวา / High ทางซ้าย</div></div>
+<div class="item"><span class="ico">›</span><div><strong>ทิศลมจริง vs Geostrophic:</strong> Geostrophic Wind ขนาน Isobar / Surface Wind เบี่ยงเข้า Low 15–30° เพราะ Friction</div></div>
+</div>
+<div class="mono">ตัวอย่าง: METAR VTBS Wind = 270/30KT
+หันหน้าเข้าลม (facing West ทิศ 270°)
+→ กางมือ: ซ้าย = South (180°) = Low อยู่ทิศใต้
+→ ขวา = North (000°) = High อยู่ทิศเหนือ
+ยืนยันกับ SIGWX: L อยู่อ่าวไทย? ✓</div>
+
+<hr class="dv">
+<div class="sub-hd">🗺 การใช้ Isobar สำหรับ 3 กลุ่ม</div>
+<div class="tbl-wrap"><table class="tbl">
+<thead><tr><th>กลุ่ม</th><th>การใช้งาน Isobar</th></tr></thead>
+<tbody>
+<tr><td>Met</td><td>ระบุ Pressure Center / Front / Trough / Ridge / วิเคราะห์การเคลื่อนของระบบอากาศ / คำนวณ Geostrophic Wind</td></tr>
+<tr><td>Dispatcher</td><td>Isobar ถี่ในเส้นทาง → Extra Fuel / L ในเส้นทาง → CB เสี่ยง / H → อากาศดี / ดูพร้อม SIGWX Hazard symbols</td></tr>
+<tr><td>นักบิน</td><td>ดู Surface Analysis Chart ก่อนบิน / Isobar บอกทิศและความเร็วลมในระดับต่ำ / ใช้ Buys Ballot เมื่อสูญเสีย Navigation</td></tr>
+</tbody></table></div>
+
+<div class="sub-hd">📡 Pressure Tendency — สำหรับ Met</div>
+<div class="items">
+<div class="item"><span class="ico">›</span><div><strong>Pressure Falling (↓)</strong> — ความกดลด → L กำลังเข้า / สภาพอากาศเสื่อมลง / Falling Rapidly &gt;6 hPa/3h = พายุกำลังเข้า</div></div>
+<div class="item"><span class="ico">›</span><div><strong>Pressure Rising (↑)</strong> — ความกดเพิ่ม → H เข้า / สภาพอากาศดีขึ้น</div></div>
+<div class="item"><span class="ico">›</span><div><strong>METAR Pressure Tendency:</strong> ระบุใน Recent WX หรือ Remark / ใช้คาดการณ์สั้นๆ ว่า Weather กำลังดีขึ้นหรือแย่ลง</div></div>
+</div>
+</div>`}
+
+
+,
+{num:"17",title:"SIGWX Symbols & Weather Codes",sub:"ICAO Standard Symbols · From Flight Folder",
+desc:"สัญลักษณ์มาตรฐาน ICAO บน SIGWX Chart ทุกตัว รหัสสภาพอากาศ Wind Barb และตัวอย่างจาก Flight Folder จริง เที่ยวบิน 8K 713 VTBS→VGHS",
+html:`<div class="sec-body">
+<div class="sh">QUALIFIER — ตัวขยายความ</div>
+<div class="g2">
+<div class="mc"><div class="mc-t">Intensity</div><div class="mc-d">
+<span class="tag td">+ Heavy</span>
+<span class="tag tgr">(ไม่มี) Moderate</span>
+<span class="tag tg">− Light</span><br>
+<span class="tag tw">VC In the vicinity</span>
+</div></div>
+<div class="mc"><div class="mc-t">Descriptor</div><div class="mc-d">
+MI Shallow · BC Patches · DR Low drifting<br>
+BL Blowing · SH Shower(s) · TS Thunderstorm<br>
+FZ Freezing · PR Partial
+</div></div>
+</div>
+
+<hr class="dv">
+<div class="sh">WEATHER PHENOMENA — สภาพอากาศ</div>
+<div class="tw-wrap"><table class="tbl">
+<thead><tr><th>Code</th><th>Precipitation</th><th>Code</th><th>Obscuration</th><th>Code</th><th>Other</th></tr></thead>
+<tbody>
+<tr><td>DZ</td><td>Drizzle ฝนละออง</td><td>BR</td><td>Mist หมอกน้ำค้าง</td><td>PO</td><td>Dust/Sand whirls</td></tr>
+<tr><td>RA</td><td>Rain ฝน</td><td>FG</td><td>Fog หมอก</td><td>SQ</td><td>Squalls พายุ</td></tr>
+<tr><td>SN</td><td>Snow หิมะ</td><td>FU</td><td>Smoke ควัน</td><td>FC</td><td>Funnel cloud / Tornado</td></tr>
+<tr><td>SG</td><td>Snow grains</td><td>VA</td><td>Volcanic ash เถ้าภูเขาไฟ</td><td>SS</td><td>Sandstorm</td></tr>
+<tr><td>IC</td><td>Ice crystals</td><td>DU</td><td>Dust (widespread)</td><td>DS</td><td>Duststorm</td></tr>
+<tr><td>PL</td><td>Ice Pellets</td><td>SA</td><td>Sand ทราย</td><td></td><td></td></tr>
+<tr><td>GR</td><td>Hail ลูกเห็บ ≥5mm</td><td>HZ</td><td>Haze ฝ้า</td><td></td><td></td></tr>
+<tr><td>GS</td><td>Small hail &lt;5mm</td><td></td><td></td><td></td><td></td></tr>
+</tbody></table></div>
+
+<hr class="dv">
+<div class="sh">SIGNIFICANT WEATHER SYMBOLS — สัญลักษณ์บน SIGWX Chart</div>
+<div class="sym-grid">
+<div class="sym-card">
+<div class="sym-icon">🧊</div>
+<div><div class="sym-t">Severe Icing</div><div class="sym-d">น้ำแข็งรุนแรง ห้าม Dispatch ผ่าน</div></div>
+</div>
+<div class="sym-card">
+<div class="sym-icon">❄️</div>
+<div><div class="sym-t">Moderate Icing</div><div class="sym-d">น้ำแข็งปานกลาง เพิ่ม Fuel 2–5%</div></div>
+</div>
+<div class="sym-card">
+<div class="sym-icon">⚡</div>
+<div><div class="sym-t">Severe Turbulence</div><div class="sym-d">SIGMET ออกแล้ว แจ้ง Crew</div></div>
+</div>
+<div class="sym-card">
+<div class="sym-icon">〰️</div>
+<div><div class="sym-t">Moderate Turbulence</div><div class="sym-d">Belt Sign / ปรับ FL</div></div>
+</div>
+<div class="sym-card">
+<div class="sym-icon">🌀</div>
+<div><div class="sym-t">Tropical Cyclone</div><div class="sym-d">Reroute ทันที ≥400 nm Typhoon</div></div>
+</div>
+<div class="sym-card">
+<div class="sym-icon">🌋</div>
+<div><div class="sym-t">Volcano / VA</div><div class="sym-d">Zero Tolerance / Reroute เด็ดขาด</div></div>
+</div>
+<div class="sym-card">
+<div class="sym-icon">⬇️</div>
+<div><div class="sym-t">Tropopause Low</div><div class="sym-d">ตัวเลข = FL เช่น 280 = FL280</div></div>
+</div>
+<div class="sym-card">
+<div class="sym-icon">↔️</div>
+<div><div class="sym-t">Tropopause Height</div><div class="sym-d">ค่า Tropopause ปกติ เช่น 450</div></div>
+</div>
+<div class="sym-card">
+<div class="sym-icon">⬆️</div>
+<div><div class="sym-t">Tropopause High</div><div class="sym-d">Tropopause สูงกว่าปกติ เช่น 380</div></div>
+</div>
+</div>
+
+<hr class="dv">
+<div class="sh">CB SYMBOLS ON SIGWX</div>
+<div class="tw-wrap"><table class="tbl">
+<thead><tr><th>Symbol</th><th>Coverage</th><th>Meaning</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td>ISOL CB</td><td>&lt;25%</td><td>CB กระจัดกระจาย</td><td><span class="tag tgr">Radar on / เลี่ยง</span></td></tr>
+<tr><td>OCNL CB</td><td>25–50%</td><td>CB บางส่วนของพื้นที่</td><td><span class="tag tw">Route deviation / Extra fuel</span></td></tr>
+<tr><td>FRQ CB</td><td>&gt;50%</td><td>CB ปกคลุมกว้างมาก</td><td><span class="tag td">Reroute + Extra fuel 10–15%</span></td></tr>
+<tr><td>EMBD CB</td><td>ซ่อนในเมฆ</td><td>CB ซ่อนอยู่ในชั้นเมฆ ตรวจด้วยตาไม่พบ</td><td><span class="tag td">Weather Radar ตลอด / SIGMET</span></td></tr>
+<tr><td>CB xxx/yyy</td><td>—</td><td>Base xxx ft / Top yyy ft</td><td>xxx = FL base / yyy = FL top</td></tr>
+</tbody></table></div>
+<div class="hl"><strong>จากกระดาษ Flight Folder 8K 713 (VTBS→VGHS, 09 Jun 2026):</strong> พบ OCNL EMBD CB หลายโซนในเส้นทาง เช่น CB 480/xxx (Central Asia), CB 530/xxx (NW), ISOL EMBD CB 470/xxx และ 500/xxx (เส้นทาง Bay of Bengal) / ภูเขาไฟ SEMERU, LEWOTOBI, DUKONO active / CAT zones 9 พื้นที่ทั่ว ICAO Area E</div>
+
+<hr class="dv">
+<div class="sh amber">WIND BARB — สัญลักษณ์ลมบน Upper Wind Chart</div>
+<div class="wind-barb">
+<div class="wb-row"><div class="wb-sym">╌ (half)</div><div class="wb-desc">Short feather — <strong>5 knots</strong></div></div>
+<div class="wb-row"><div class="wb-sym">— (full)</div><div class="wb-desc">Long feather — <strong>10 knots</strong></div></div>
+<div class="wb-row"><div class="wb-sym">◀ (tri)</div><div class="wb-desc">Triangle / Pennant — <strong>50 knots</strong></div></div>
+</div>
+<div class="hl"><strong>ตัวอย่าง Upper Wind (จาก Flight Folder 8K 713):</strong><br>
+FL270 / 350 hPa: Wind ≈22–23 kt, T = −22°C บริเวณเส้นทาง<br>
+FL300 / 300 hPa: Wind ≈28–30 kt, T = −28°C<br>
+FL320 / 275 hPa: Wind ≈33–35 kt, T = −33°C<br>
+FL340 / 250 hPa: Wind ≈38–41 kt, T = −40°C<br>
+FL360 / 225 hPa: Wind ≈43–46 kt, T = −45°C<br>
+→ Subtropical Jet core ไม่แรงมาก (ฤดูร้อน) / ลมอ่อนใน Tropical region ตลอดเส้นทาง BKK–DAC</div>
+
+<hr class="dv">
+<div class="sh">DOUBLE BAR NOTATION</div>
+<div class="hl"><strong>Double bar (=) บน Jet Stream Arrow:</strong> บ่งบอกว่ามีการเปลี่ยนแปลง Level ≤3,000 ft และ/หรือ ความเร็วลม ≤37 km/h (20 kt) ในบริเวณนั้น</div>
+
+<hr class="dv">
+<div class="sh">CAT AREAS FROM SIGWX — ICAO Area E (00Z 09 Jun 2026)</div>
+<div class="tw-wrap"><table class="tbl">
+<thead><tr><th>Area</th><th>FL Base</th><th>FL Top</th><th>หมายเหตุ</th></tr></thead>
+<tbody>
+<tr><td>Area 1</td><td>FL200</td><td>FL400</td><td>Central region</td></tr>
+<tr><td>Area 2</td><td>FL240</td><td>FL360</td><td></td></tr>
+<tr><td>Area 3</td><td>FL160</td><td>FL400</td><td></td></tr>
+<tr><td>Area 4</td><td>FL160</td><td>FL400</td><td>เส้นทาง BKK ผ่าน</td></tr>
+<tr><td>Area 5</td><td>FL180</td><td>FL400</td><td></td></tr>
+<tr><td>Area 6</td><td>FL160</td><td>FL400</td><td></td></tr>
+<tr><td>Area 7</td><td>FL300</td><td>FL400</td><td></td></tr>
+<tr><td>Area 8</td><td>FL160</td><td>FL400</td><td></td></tr>
+<tr><td>Area 9</td><td>FL160</td><td>FL400</td><td></td></tr>
+</tbody></table></div>
+<div class="al al-w"><span class="al-ico">⚠</span><div><strong>หมายเหตุจาก SIGWX:</strong> "CB IMPLIES TS, GR, MOD OR SEV TURB AND ICE / CHECK SIGMETS, ADVISORIES FOR TC AND VA, AND ASHTAM AND NOTAM FOR VA" — ต้องตรวจ SIGMET ร่วมเสมอ / SIGWX เป็น Forecast เท่านั้น</div></div>
+</div>`
+}
+
+
+]; /* end chapters */
+
+
+/* ── FUNCTIONS ── */
+function activate(idx) {
+  document.querySelectorAll('.sec').forEach(function(s,i){ s.classList.toggle('on', i===idx); });
+  document.querySelectorAll('.snav-btn').forEach(function(b,i){ b.classList.toggle('on', i===idx); });
+  document.querySelectorAll('.bb').forEach(function(b,i){ b.classList.toggle('on', i===idx); });
+  var home = document.getElementById('home');
+  if (home) home.style.display = 'none';
+  var bbs = document.querySelectorAll('.bb');
+  if (bbs[idx]) bbs[idx].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
+function buildAll() {
+  var snav = document.getElementById('snav');
+  var bnav = document.getElementById('bnav');
+  var secs = document.getElementById('secs');
+  chapters.forEach(function(ch, i) {
+    var sb = document.createElement('button');
+    sb.className = 'snav-btn' + (i===0?' on':'');
+    sb.innerHTML = '<span class="snav-num">'+ch.num+'</span><span>'+ch.title+'</span>';
+    sb.onclick = (function(idx){ return function(){ activate(idx); }; })(i);
+    snav.appendChild(sb);
+
+    var bb = document.createElement('button');
+    bb.className = 'bb' + (i===0?' on':'');
+    bb.textContent = ch.num;
+    bb.title = ch.title;
+    bb.onclick = (function(idx){ return function(){ activate(idx); window.scrollTo({top:0,behavior:'smooth'}); }; })(i);
+    bnav.appendChild(bb);
+
+    var sec = document.createElement('div');
+    sec.className = 'sec' + (i===0?' on':'');
+    sec.id = 'sec'+i;
+    sec.innerHTML =
+      '<div class="sec-hdr">'+
+        '<div class="sec-num">'+ch.num+' / '+ch.sub+'</div>'+
+        '<div class="sec-title">'+ch.title+'</div>'+
+        '<div class="sec-desc">'+ch.desc+'</div>'+
+      '</div>'+ch.html;
+    secs.appendChild(sec);
+  });
+}
+buildAll();
+</script>
+
+</body>
+</html>
