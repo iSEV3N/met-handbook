@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="theme-color" content="#0b1e3d">
+<meta name="theme-color" content="#04111f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MET Handbook">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>Aviation MET Handbook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -472,13 +478,22 @@ body{
 /* ── WEATHER ICON STRIP ── */
 .wx-strip{
   display:flex;gap:6px;overflow-x:auto;
-  padding:10px 0 8px;scrollbar-width:none;
+  padding:10px 0 8px;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(100,180,255,0.3) transparent;
   margin-bottom:10px;
   position:sticky;top:90px;z-index:100;
   background:linear-gradient(180deg,var(--sky-mid) 80%,transparent);
-  padding-bottom:10px;
+  padding-bottom:12px;
+  cursor:grab;
+  user-select:none;
+  -webkit-user-select:none;
 }
-.wx-strip::-webkit-scrollbar{display:none}
+.wx-strip:active{cursor:grabbing}
+.wx-strip::-webkit-scrollbar{height:4px}
+.wx-strip::-webkit-scrollbar-track{background:transparent}
+.wx-strip::-webkit-scrollbar-thumb{background:rgba(100,180,255,0.25);border-radius:4px}
+.wx-strip::-webkit-scrollbar-thumb:hover{background:rgba(100,180,255,0.45)}
 .wx-icon-btn{
   flex-shrink:0;
   background:linear-gradient(135deg,rgba(15,47,88,0.7),rgba(11,37,69,0.5));
@@ -1729,6 +1744,35 @@ function buildAll(){
   });
 }
 buildAll();
+
+/* ── WX-STRIP SCROLL (mouse drag + wheel) ── */
+(function(){
+  var el = document.getElementById('wx-strip');
+  if(!el) return;
+  var isDown = false, startX, scrollLeft;
+  el.addEventListener('mousedown', function(e){
+    isDown = true;
+    el.style.cursor = 'grabbing';
+    startX = e.pageX - el.offsetLeft;
+    scrollLeft = el.scrollLeft;
+  });
+  document.addEventListener('mouseup', function(){
+    isDown = false;
+    el.style.cursor = 'grab';
+  });
+  el.addEventListener('mousemove', function(e){
+    if(!isDown) return;
+    e.preventDefault();
+    var x = e.pageX - el.offsetLeft;
+    var walk = (x - startX) * 1.5;
+    el.scrollLeft = scrollLeft - walk;
+  });
+  el.addEventListener('wheel', function(e){
+    e.preventDefault();
+    el.scrollLeft += e.deltaY * 0.8;
+  }, {passive:false});
+})();
+
 </script>
 </body>
 </html>
