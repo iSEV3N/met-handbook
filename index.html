@@ -3,452 +3,611 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="theme-color" content="#0a0e1a">
+<meta name="theme-color" content="#0b1e3d">
 <title>Aviation MET Handbook</title>
-<meta name="theme-color" content="#07090f">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ── TOKENS ─────────────────────────────── */
+/* ══════════════════════════════════════
+   TOKENS — Weather Sky theme
+   Sky gradient deep blue → dusk navy
+   Accent: cloud white, lightning yellow,
+           radar green, storm red
+══════════════════════════════════════ */
 :root{
-  /* Cockpit Dark palette */
-  --void:#07090f;
-  --panel:#0d1120;
-  --surface:#121828;
-  --lift:#1a2540;
-  --rim:#1e2d4a;
-  --line:rgba(79,175,240,0.14);
-  --line2:rgba(79,175,240,0.28);
+  /* Sky layers */
+  --sky-deep:#04111f;
+  --sky-mid:#071d36;
+  --sky-card:#0b2545;
+  --sky-lift:#0f2f58;
+  --sky-rim:#1a3d6e;
 
-  /* Accent system */
-  --sky:#4faff0;      /* primary blue */
-  --sky2:#7dcfff;     /* light blue */
-  --green:#2ec98a;    /* OK / safe */
-  --amber:#f5a623;    /* caution */
-  --red:#e85454;      /* danger */
-  --red2:#ff7070;
-  --purple:#9b7fe8;   /* info alt */
+  /* Glow lines */
+  --line:rgba(100,180,255,0.12);
+  --line2:rgba(100,180,255,0.24);
+  --line3:rgba(100,180,255,0.5);
+
+  /* Accent palette */
+  --cloud:#c8e6ff;      /* cloud white-blue */
+  --radar:#00e5a0;      /* radar green */
+  --lightning:#ffe54c;  /* lightning yellow */
+  --storm:#ff5252;      /* storm red */
+  --storm2:#ff8a80;
+  --dusk:#b388ff;       /* dusk purple */
+  --rain:#64b5f6;       /* rain blue */
 
   /* Text */
-  --t1:#ddeeff;
-  --t2:#8ab4d4;
-  --t3:#3d6080;
-  --t4:#1e3050;
+  --t1:#e8f4ff;
+  --t2:#7eb8e8;
+  --t3:#2d5a8a;
+  --t4:#0f2f58;
 
-  /* Radii */
-  --r1:12px;--r2:8px;--r3:5px;
+  /* Radius */
+  --r1:16px;--r2:12px;--r3:8px;--r4:6px;
 
   /* Fonts */
-  --fn:'IBM Plex Sans Thai',sans-serif;
+  --fn:'IBM Plex Sans Thai',system-ui,sans-serif;
   --fm:'IBM Plex Mono',monospace;
 }
 
+/* ── RESET & BASE ── */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{
-  background:var(--void);
+  background:var(--sky-deep);
   color:var(--t1);
   font-family:var(--fn);
-  font-size:15px;
-  line-height:1.75;
+  font-size:17px;
+  line-height:1.8;
   min-height:100vh;
   overflow-x:hidden;
 }
-/* ── RESPONSIVE FONT SCALING ── */
-@media(min-width:600px){
-  body{font-size:16px}
-  .sec-title{font-size:22px!important}
-  .tbl{font-size:13px!important}
-  .tbl th{font-size:10.5px!important}
-  .sh{font-size:13px!important}
-  .al{font-size:13px!important}
-  .hl{font-size:13px!important}
-  .bt{font-size:14px!important}
-  .mono{font-size:12.5px!important}
-  .item{font-size:14px!important}
-  .sb{font-size:13px!important}
-  .mc-t{font-size:13px!important}
-  .mc-d{font-size:12px!important}
-  .sym-t{font-size:12.5px!important}
-  .sym-d{font-size:11.5px!important}
-}
-@media(max-width:400px){
-  body{font-size:14px}
-  .sec-title{font-size:17px!important}
-  .tbl{font-size:11px!important}
-  .tbl th{font-size:9px!important}
-  .tag{font-size:10px!important;padding:1px 6px!important}
-}
 
-/* ── HEADER ──────────────────────────────── */
+/* ── ANIMATED SKY BACKGROUND ── */
+.sky-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(0,80,180,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(0,50,120,0.12) 0%, transparent 50%),
+    linear-gradient(180deg, #04111f 0%, #071d36 40%, #04111f 100%);
+}
+/* Subtle cloud wisps */
+.sky-bg::before{
+  content:'';position:absolute;
+  top:5%;left:-20%;width:140%;height:35%;
+  background:radial-gradient(ellipse 50% 100% at 40% 50%, rgba(100,180,255,0.04) 0%, transparent 70%),
+             radial-gradient(ellipse 30% 80% at 75% 40%, rgba(100,180,255,0.03) 0%, transparent 60%);
+  animation:drift 40s ease-in-out infinite alternate;
+}
+.sky-bg::after{
+  content:'';position:absolute;
+  top:15%;left:10%;width:120%;height:25%;
+  background:radial-gradient(ellipse 40% 100% at 60% 50%, rgba(80,140,220,0.04) 0%, transparent 70%);
+  animation:drift 55s ease-in-out infinite alternate-reverse;
+}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(3%)}}
+
+/* ── LAYOUT ── */
+.app{position:relative;z-index:1;max-width:960px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+
+/* ══════════════════════
+   HEADER — Weather Hero
+══════════════════════ */
 .hdr{
-  background:linear-gradient(180deg,var(--panel) 0%,rgba(13,17,32,0.96) 100%);
-  border-bottom:1px solid var(--line2);
-  padding:14px 16px 12px;
+  padding:16px 16px 0;
   position:sticky;top:0;z-index:200;
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
 }
-.hdr-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.hdr-badge{
-  background:linear-gradient(135deg,var(--sky),#2a8fd4);
-  color:#fff;border-radius:6px;
-  padding:4px 10px;font-size:10px;
-  font-family:var(--fm);letter-spacing:1.5px;
-  text-transform:uppercase;flex-shrink:0;
-  box-shadow:0 0 16px rgba(79,175,240,0.25);
+.hdr-inner{
+  background:linear-gradient(135deg,
+    rgba(11,37,69,0.96) 0%,
+    rgba(7,29,54,0.96) 100%);
+  border:1px solid var(--line2);
+  border-radius:var(--r1);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  padding:14px 16px 12px;
+  position:relative;
+  overflow:hidden;
 }
-.hdr h1{font-size:16px;font-weight:600;line-height:1.2}
-.hdr h1 em{color:var(--sky);font-style:normal}
-.hdr-meta{display:flex;flex-wrap:wrap;gap:10px}
-.hm{font-size:10.5px;color:var(--t3);display:flex;align-items:center;gap:4px}
-.hm::before{content:'›';color:var(--sky);font-weight:600}
+/* Weather phenomenon strip across top */
+.hdr-inner::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,
+    var(--rain) 0%,
+    var(--radar) 25%,
+    var(--lightning) 50%,
+    var(--storm) 75%,
+    var(--dusk) 100%);
+}
+/* Faint radar sweep */
+.hdr-inner::after{
+  content:'';position:absolute;
+  right:-40px;top:-40px;
+  width:160px;height:160px;
+  border-radius:50%;
+  border:1px solid rgba(0,229,160,0.08);
+  box-shadow:0 0 0 30px rgba(0,229,160,0.04),
+             0 0 0 60px rgba(0,229,160,0.02);
+}
 
-/* radar pulse animation on badge */
-@keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(79,175,240,0.3)}50%{box-shadow:0 0 20px rgba(79,175,240,0.55)}}
-.hdr-badge{animation:pulse 3s ease-in-out infinite}
+.hdr-row{display:flex;align-items:flex-start;gap:12px}
+.hdr-icon{
+  width:44px;height:44px;border-radius:var(--r3);flex-shrink:0;
+  background:linear-gradient(135deg,rgba(0,229,160,0.15),rgba(100,180,255,0.1));
+  border:1px solid rgba(0,229,160,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  box-shadow:0 0 20px rgba(0,229,160,0.1);
+}
+.hdr-text{}
+.hdr-eyebrow{
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--radar);font-family:var(--fm);margin-bottom:3px;
+  display:flex;align-items:center;gap:6px;
+}
+.hdr-eyebrow::before{
+  content:'';width:18px;height:1px;
+  background:linear-gradient(90deg,var(--radar),transparent);
+}
+.hdr-title{font-size:18px;font-weight:600;line-height:1.2;color:var(--t1)}
+.hdr-title em{color:var(--rain);font-style:normal}
+.hdr-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.chip{
+  font-size:10px;color:var(--t3);
+  background:rgba(100,180,255,0.06);
+  border:1px solid var(--line);
+  border-radius:20px;padding:2px 9px;
+  font-family:var(--fm);letter-spacing:.3px;
+}
 
-/* ── BOTTOM NAV (mobile) ──────────────────── */
-.bnav{
-  display:none;position:fixed;bottom:0;left:0;right:0;
-  background:linear-gradient(0deg,var(--panel) 80%,rgba(13,17,32,0.9));
+/* ══════════════════════
+   BOTTOM TAB BAR (mobile)
+══════════════════════ */
+.tab-bar{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(7,29,54,0.97);
   border-top:1px solid var(--line2);
-  padding:8px 10px 12px;
-  z-index:199;overflow-x:auto;scrollbar-width:none;
-  gap:5px;
+  backdrop-filter:blur(20px);
+  padding:6px 8px 10px;
+  overflow-x:auto;scrollbar-width:none;
+  gap:4px;
 }
-.bnav::-webkit-scrollbar{display:none}
-@media(max-width:680px){.bnav{display:flex}}
-.bb{
-  flex-shrink:0;padding:6px 10px;border-radius:20px;
-  border:1px solid var(--line2);background:transparent;
-  color:var(--t3);font-size:10.5px;cursor:pointer;
-  font-family:var(--fm);white-space:nowrap;transition:.15s;
+.tab-bar::-webkit-scrollbar{display:none}
+@media(max-width:700px){.tab-bar{display:flex}}
+.tab-pill{
+  flex-shrink:0;padding:5px 10px;
+  border-radius:20px;border:1px solid var(--line);
+  background:transparent;
+  color:var(--t3);font-size:10.5px;
+  cursor:pointer;font-family:var(--fm);white-space:nowrap;
+  transition:.15s;
 }
-.bb:hover{color:var(--sky);border-color:rgba(79,175,240,0.4)}
-.bb.on{background:rgba(79,175,240,0.16);color:var(--sky2);border-color:var(--sky)}
+.tab-pill:hover{color:var(--rain);border-color:rgba(100,180,255,0.35)}
+.tab-pill.on{
+  background:linear-gradient(135deg,rgba(100,180,255,0.18),rgba(0,229,160,0.1));
+  color:var(--cloud);border-color:var(--rain);
+  box-shadow:0 0 10px rgba(100,180,255,0.15);
+}
 
-/* ── LAYOUT ───────────────────────────────── */
-.layout{display:flex;max-width:960px;margin:0 auto;padding-bottom:72px}
+/* ══════════════════════
+   MAIN LAYOUT
+══════════════════════ */
+.body-wrap{
+  display:flex;flex:1;
+  padding:12px 16px 80px;
+  gap:12px;
+}
 .sidebar{
-  width:210px;flex-shrink:0;
-  padding:16px 10px;
-  position:sticky;top:68px;
-  height:calc(100vh - 68px);
+  width:200px;flex-shrink:0;
+  position:sticky;top:96px;
+  height:calc(100vh - 110px);
   overflow-y:auto;scrollbar-width:thin;
-  scrollbar-color:var(--lift) transparent;
+  scrollbar-color:var(--sky-lift) transparent;
 }
-@media(max-width:680px){.sidebar{display:none}}
-.main{flex:1;padding:14px;min-width:0}
-
-/* ── SIDEBAR ─────────────────────────────── */
-.snav-hd{
+@media(max-width:700px){.sidebar{display:none}}
+.sidebar-hd{
   font-size:9px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--t3);margin-bottom:10px;padding:0 6px;
-  font-family:var(--fm);
+  color:var(--t3);margin-bottom:8px;font-family:var(--fm);
+  padding:0 4px;
 }
 .snav-btn{
   display:flex;align-items:center;gap:9px;
-  padding:8px 8px;border-radius:var(--r3);
-  cursor:pointer;width:100%;border:none;
-  background:transparent;text-align:left;
+  width:100%;border:none;background:transparent;
+  text-align:left;padding:8px 8px;
+  border-radius:var(--r4);cursor:pointer;
   color:var(--t2);font-family:var(--fn);font-size:12px;
   transition:.15s;line-height:1.3;
 }
-.snav-btn:hover{background:var(--lift);color:var(--t1)}
+.snav-btn:hover{background:rgba(100,180,255,0.06);color:var(--t1)}
 .snav-btn.on{
-  background:linear-gradient(135deg,rgba(79,175,240,0.15),rgba(79,175,240,0.06));
-  color:var(--sky2);
-  border-left:2px solid var(--sky);
+  background:linear-gradient(135deg,rgba(100,180,255,0.12),rgba(0,229,160,0.06));
+  color:var(--cloud);
+  border-left:2px solid var(--radar);
   padding-left:6px;
 }
 .snav-num{
-  width:22px;height:22px;border-radius:4px;
-  background:var(--lift);
+  width:22px;height:22px;border-radius:5px;
+  background:var(--sky-lift);border:1px solid var(--sky-rim);
   display:flex;align-items:center;justify-content:center;
-  font-size:9px;font-family:var(--fm);
-  color:var(--t3);flex-shrink:0;
-  border:1px solid var(--rim);
+  font-size:9px;font-family:var(--fm);color:var(--t3);flex-shrink:0;
 }
 .snav-btn.on .snav-num{
-  background:rgba(79,175,240,0.2);
-  color:var(--sky);border-color:var(--sky);
+  background:rgba(0,229,160,0.15);color:var(--radar);
+  border-color:rgba(0,229,160,0.4);
 }
 
-/* ── PRIORITY CARD ─────────────────────────── */
-.pcard{
-  background:var(--panel);
-  border:1px solid var(--line2);
-  border-radius:var(--r1);
-  padding:16px;margin-bottom:14px;
-  position:relative;overflow:hidden;
-}
-.pcard::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--sky),var(--green),var(--amber),var(--red));
-}
-.pcard-title{
-  font-size:11px;font-weight:600;color:var(--sky);
-  letter-spacing:1.2px;text-transform:uppercase;
-  font-family:var(--fm);margin-bottom:12px;
-}
-.pri{display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
-.pri:last-child{border-bottom:none}
-.pri-n{
-  width:22px;height:22px;border-radius:4px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:9px;font-weight:600;flex-shrink:0;margin-top:2px;
-  font-family:var(--fm);
-}
-.p1{background:rgba(232,84,84,0.2);color:var(--red2);border:1px solid rgba(232,84,84,0.3)}
-.p2{background:rgba(245,166,35,0.2);color:var(--amber);border:1px solid rgba(245,166,35,0.3)}
-.p3{background:rgba(79,175,240,0.2);color:var(--sky);border:1px solid rgba(79,175,240,0.3)}
-.p4{background:rgba(46,201,138,0.2);color:var(--green);border:1px solid rgba(46,201,138,0.3)}
-.p5{background:rgba(61,96,128,0.2);color:var(--t2);border:1px solid var(--line)}
-.pri-t{font-size:13px;font-weight:500;color:var(--t1)}
-.pri-s{font-size:11px;color:var(--t3);margin-top:1px}
-
-/* ── SECTIONS ─────────────────────────────── */
+/* ══════════════════════
+   SECTIONS
+══════════════════════ */
+.content{flex:1;min-width:0}
 .sec{display:none}.sec.on{display:block}
 
+/* Section header card */
 .sec-hdr{
-  background:var(--panel);
+  background:linear-gradient(135deg,var(--sky-card),var(--sky-mid));
   border:1px solid var(--line2);
   border-radius:var(--r1);
-  padding:16px;margin-bottom:12px;
+  padding:18px 18px 16px;
+  margin-bottom:12px;
   position:relative;overflow:hidden;
 }
-.sec-hdr::after{
+.sec-hdr::before{
   content:'';position:absolute;
-  bottom:0;left:16px;right:16px;height:1px;
-  background:linear-gradient(90deg,var(--sky),transparent);
+  top:-30px;right:-30px;
+  width:100px;height:100px;border-radius:50%;
+  background:radial-gradient(circle,rgba(100,180,255,0.06) 0%,transparent 70%);
 }
-.sec-num{
-  font-size:9px;letter-spacing:2px;
-  text-transform:uppercase;color:var(--sky);
-  margin-bottom:5px;font-family:var(--fm);
-  display:flex;align-items:center;gap:6px;
+.sec-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);
+  border-radius:20px;padding:2px 10px;
+  font-size:9px;font-family:var(--fm);letter-spacing:1.5px;
+  color:var(--radar);margin-bottom:8px;text-transform:uppercase;
 }
-.sec-num::before{
-  content:'';width:16px;height:1px;
-  background:var(--sky);display:block;
-}
-.sec-title{font-size:20px;font-weight:600;margin-bottom:5px;line-height:1.2}
+.sec-title{font-size:22px;font-weight:600;margin-bottom:6px;line-height:1.2}
 .sec-desc{font-size:13px;color:var(--t2);line-height:1.65}
 
+/* Content body card */
 .sec-body{
-  background:var(--panel);
+  background:var(--sky-card);
   border:1px solid var(--line2);
   border-radius:var(--r1);
   padding:16px;margin-bottom:12px;
 }
 
-/* ── TYPOGRAPHY ─────────────────────────── */
+/* ══════════════════════
+   PRIORITY DASHBOARD
+══════════════════════ */
+.dash{margin-bottom:12px}
+.dash-hero{
+  background:linear-gradient(135deg,var(--sky-card) 0%,var(--sky-mid) 100%);
+  border:1px solid var(--line2);
+  border-radius:var(--r1);
+  padding:18px;margin-bottom:10px;
+  position:relative;overflow:hidden;
+}
+.dash-hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 80% at 90% 20%,rgba(0,229,160,0.05) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 60% at 10% 80%,rgba(100,180,255,0.05) 0%,transparent 50%);
+}
+.dash-label{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--radar);font-family:var(--fm);margin-bottom:12px;
+  position:relative;
+}
+.priority-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;position:relative;
+}
+.pri-card{
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--line);
+  border-radius:var(--r3);
+  padding:10px 12px;
+  display:flex;align-items:flex-start;gap:9px;
+  cursor:pointer;transition:.15s;
+}
+.pri-card:hover{border-color:var(--line2);background:rgba(100,180,255,0.05)}
+.pri-rank{
+  width:22px;height:22px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px;
+  font-family:var(--fm);
+}
+.r1{background:rgba(255,82,82,0.2);color:var(--storm2);border:1px solid rgba(255,82,82,0.35)}
+.r2{background:rgba(255,229,76,0.15);color:var(--lightning);border:1px solid rgba(255,229,76,0.3)}
+.r3{background:rgba(100,181,246,0.15);color:var(--rain);border:1px solid rgba(100,181,246,0.3)}
+.r4{background:rgba(0,229,160,0.12);color:var(--radar);border:1px solid rgba(0,229,160,0.25)}
+.r5{background:rgba(100,100,140,0.15);color:var(--t2);border:1px solid var(--line)}
+.pri-info{}
+.pri-t{font-size:13px;font-weight:600;color:var(--t1);line-height:1.3}
+.pri-s{font-size:11px;color:var(--t3);margin-top:1px}
+
+/* ══════════════════════
+   TYPOGRAPHY COMPONENTS
+══════════════════════ */
 .sh{
-  font-size:12px;font-weight:600;color:var(--sky2);
-  margin:16px 0 10px;
+  font-size:12.5px;font-weight:600;
+  color:var(--rain);
+  margin:14px 0 9px;
   display:flex;align-items:center;gap:8px;
   padding-bottom:7px;
   border-bottom:1px solid var(--line);
-  font-family:var(--fm);letter-spacing:.5px;
+  font-family:var(--fm);letter-spacing:.8px;
   text-transform:uppercase;
 }
 .sh:first-child{margin-top:0}
-.sh.red{color:var(--red2);border-color:rgba(232,84,84,0.25)}
-.sh.amber{color:var(--amber);border-color:rgba(245,166,35,0.25)}
-.sh.green{color:var(--green);border-color:rgba(46,201,138,0.25)}
-.bt{font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:10px}
+.sh.green{color:var(--radar);border-color:rgba(0,229,160,0.2)}
+.sh.yellow{color:var(--lightning);border-color:rgba(255,229,76,0.2)}
+.sh.red{color:var(--storm2);border-color:rgba(255,82,82,0.2)}
+
 .dv{border:none;border-top:1px solid var(--line);margin:14px 0}
+
 .hl{
-  border-left:2px solid var(--sky);
-  padding:9px 13px;
-  background:rgba(79,175,240,0.06);
-  border-radius:0 var(--r3) var(--r3) 0;
-  font-size:12px;color:var(--t2);line-height:1.65;
-  margin:10px 0;
+  border-left:2px solid var(--rain);
+  padding:10px 14px;
+  background:rgba(100,180,255,0.05);
+  border-radius:0 var(--r4) var(--r4) 0;
+  font-size:13.5px;color:var(--t2);line-height:1.65;margin:10px 0;
 }
 .hl strong{color:var(--t1)}
+
 .mono{
-  background:var(--void);
+  background:rgba(4,17,31,0.8);
   border:1px solid var(--line2);
-  border-radius:var(--r2);
-  padding:11px 13px;
-  font-family:var(--fm);font-size:11.5px;
-  color:var(--t2);line-height:1.9;
-  margin:8px 0;white-space:pre-wrap;
-  word-break:break-all;overflow-x:auto;
+  border-radius:var(--r3);
+  padding:12px 15px;
+  font-family:var(--fm);font-size:12.5px;
+  color:var(--t2);line-height:1.9;margin:8px 0;
+  white-space:pre-wrap;word-break:break-all;overflow-x:auto;
 }
-.mono .h{color:var(--sky2);font-weight:500}
-.mono .w{color:var(--amber);font-weight:500}
-.mono .r{color:var(--red2)}
-.mono .g{color:var(--green)}
+.mono .h{color:var(--rain);font-weight:500}
+.mono .g{color:var(--radar);font-weight:500}
+.mono .y{color:var(--lightning)}
+.mono .r{color:var(--storm2)}
 
-/* ── TAGS ───────────────────────────────── */
+/* ── TAGS ── */
 .tag{
-  display:inline-flex;padding:2px 8px;
-  border-radius:20px;font-size:10.5px;font-weight:500;
-  margin:2px;font-family:var(--fm);
-  border:1px solid transparent;
+  display:inline-flex;padding:3px 9px;
+  border-radius:20px;font-size:11.5px;font-weight:500;
+  margin:2px;font-family:var(--fm);border:1px solid transparent;
 }
-.td{background:rgba(232,84,84,0.15);color:var(--red2);border-color:rgba(232,84,84,0.3)}
-.tw{background:rgba(245,166,35,0.15);color:var(--amber);border-color:rgba(245,166,35,0.3)}
-.ti{background:rgba(79,175,240,0.15);color:var(--sky2);border-color:rgba(79,175,240,0.3)}
-.tg{background:rgba(46,201,138,0.15);color:var(--green);border-color:rgba(46,201,138,0.3)}
-.tgr{background:rgba(61,96,128,0.15);color:var(--t2);border-color:var(--line)}
+.td{background:rgba(255,82,82,0.12);color:var(--storm2);border-color:rgba(255,82,82,0.3)}
+.tw{background:rgba(255,229,76,0.1);color:var(--lightning);border-color:rgba(255,229,76,0.25)}
+.ti{background:rgba(100,181,246,0.12);color:var(--rain);border-color:rgba(100,181,246,0.3)}
+.tg{background:rgba(0,229,160,0.1);color:var(--radar);border-color:rgba(0,229,160,0.25)}
+.tgr{background:rgba(100,120,160,0.1);color:var(--t2);border-color:var(--line)}
 
-/* ── ALERTS ─────────────────────────────── */
+/* ── ALERTS ── */
 .al{
-  border-radius:var(--r2);padding:10px 13px;
-  margin:10px 0;display:flex;gap:9px;
-  font-size:12px;line-height:1.65;
+  border-radius:var(--r3);padding:11px 14px;margin:10px 0;
+  display:flex;gap:9px;font-size:13px;line-height:1.65;
   border-left:3px solid;
 }
-.al-ico{font-size:16px;flex-shrink:0;margin-top:1px}
-.al-d{background:rgba(232,84,84,0.08);border-color:var(--red);color:#f0b0b0}
-.al-w{background:rgba(245,166,35,0.08);border-color:var(--amber);color:#f5d080}
-.al-i{background:rgba(79,175,240,0.08);border-color:var(--sky);color:#a0d0f0}
-.al-g{background:rgba(46,201,138,0.08);border-color:var(--green);color:#90e0c0}
+.al-d{background:rgba(255,82,82,0.07);border-color:var(--storm);color:#ffb3b3}
+.al-w{background:rgba(255,229,76,0.07);border-color:var(--lightning);color:#fff0a0}
+.al-i{background:rgba(100,181,246,0.07);border-color:var(--rain);color:#b0d8ff}
+.al-g{background:rgba(0,229,160,0.07);border-color:var(--radar);color:#90f0d0}
 .al strong{font-weight:600}
 
-/* ── TABLES ─────────────────────────────── */
+/* ── TABLES ── */
 .tw-wrap{overflow-x:auto;margin:8px 0;-webkit-overflow-scrolling:touch}
-.tbl{
-  width:100%;border-collapse:collapse;
-  font-size:12px;min-width:280px;
-}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:260px}
 .tbl th{
-  text-align:left;padding:7px 10px;
-  background:var(--lift);color:var(--sky);
-  font-size:9.5px;letter-spacing:1px;
-  text-transform:uppercase;border-bottom:1px solid var(--line2);
+  text-align:left;padding:8px 11px;
+  background:rgba(15,47,88,0.8);
+  color:var(--rain);font-size:10.5px;
+  letter-spacing:1px;text-transform:uppercase;
+  border-bottom:1px solid var(--line2);
   font-family:var(--fm);font-weight:500;
 }
 .tbl td{
-  padding:7px 10px;
+  padding:8px 11px;
   border-bottom:1px solid var(--line);
   color:var(--t2);vertical-align:top;
 }
-.tbl tr:hover td{background:rgba(79,175,240,0.04)}
+.tbl tr:hover td{background:rgba(100,180,255,0.03)}
 .tbl td:first-child{color:var(--t1);font-weight:500;font-family:var(--fm);font-size:11px}
 
-/* ── GRIDS ──────────────────────────────── */
+/* ── GRIDS ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
-@media(max-width:500px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}}
 .mc{
-  background:var(--surface);
+  background:linear-gradient(135deg,rgba(15,47,88,0.6),rgba(11,37,69,0.4));
   border:1px solid var(--line2);
-  border-radius:var(--r2);
-  padding:11px 12px;
+  border-radius:var(--r3);padding:11px 13px;
   transition:.15s;
 }
-.mc:hover{border-color:rgba(79,175,240,0.35)}
-.mc-ico{font-size:18px;margin-bottom:6px;color:var(--sky)}
-.mc-t{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:3px}
-.mc-d{font-size:11px;color:var(--t2);line-height:1.5}
+.mc:hover{border-color:rgba(100,180,255,0.3)}
+.mc-ico{font-size:18px;margin-bottom:6px}
+.mc-t{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:3px}
+.mc-d{font-size:12px;color:var(--t2);line-height:1.5}
 
-/* ── LISTS ──────────────────────────────── */
+/* ── LISTS ── */
 .items{display:flex;flex-direction:column;gap:7px}
-.item{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--t2);line-height:1.55}
+.item{display:flex;align-items:flex-start;gap:9px;font-size:14px;color:var(--t2);line-height:1.55}
 .item .ico{
-  font-size:12px;flex-shrink:0;margin-top:3px;
-  color:var(--sky);font-family:var(--fm);
-  background:rgba(79,175,240,0.1);
-  border-radius:3px;padding:0 4px;
-  min-width:18px;text-align:center;
+  font-size:11px;flex-shrink:0;margin-top:2px;
+  color:var(--rain);font-family:var(--fm);
+  background:rgba(100,180,255,0.08);
+  border-radius:3px;padding:0 5px;
+  min-width:20px;text-align:center;
 }
 .item strong{color:var(--t1)}
-
 .steps{display:flex;flex-direction:column;gap:9px;margin:8px 0}
 .step{display:flex;gap:10px}
 .sn{
   width:24px;height:24px;border-radius:6px;
-  background:rgba(79,175,240,0.15);
-  border:1px solid rgba(79,175,240,0.3);
-  color:var(--sky);font-size:10px;font-weight:600;
+  background:rgba(0,229,160,0.12);
+  border:1px solid rgba(0,229,160,0.3);
+  color:var(--radar);font-size:10px;font-weight:700;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;margin-top:2px;font-family:var(--fm);
 }
-.sb{font-size:12px;color:var(--t2);line-height:1.55}
+.sb{font-size:13.5px;color:var(--t2);line-height:1.6}
 .sb strong{color:var(--t1);display:block;margin-bottom:2px}
 
-/* ── SIGWX SYMBOL BOX ────────────────────── */
-.sym-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:8px;margin:10px 0;
-}
+/* ── SIGWX SYMBOLS ── */
+.sym-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:10px 0}
 .sym-card{
-  background:var(--surface);border:1px solid var(--line2);
-  border-radius:var(--r2);padding:10px 12px;
-  display:flex;align-items:flex-start;gap:10px;
+  background:rgba(15,47,88,0.5);border:1px solid var(--line2);
+  border-radius:var(--r3);padding:10px 12px;
+  display:flex;align-items:flex-start;gap:9px;
 }
-.sym-icon{
-  font-size:20px;min-width:28px;text-align:center;
-  flex-shrink:0;margin-top:2px;
-}
-.sym-t{font-size:11.5px;font-weight:600;color:var(--t1);margin-bottom:2px;font-family:var(--fm)}
-.sym-d{font-size:10.5px;color:var(--t3);line-height:1.4}
+.sym-icon{font-size:20px;min-width:26px;text-align:center;flex-shrink:0;margin-top:2px}
+.sym-t{font-size:12.5px;font-weight:600;color:var(--t1);margin-bottom:2px;font-family:var(--fm)}
+.sym-d{font-size:11.5px;color:var(--t3);line-height:1.4}
 
-/* ── WIND BARB TABLE ────────────────────── */
+/* ── WIND BARB ── */
 .wind-barb{display:flex;flex-direction:column;gap:6px;margin:8px 0}
-.wb-row{display:flex;align-items:center;gap:12px;padding:6px 10px;background:var(--surface);border-radius:var(--r3)}
-.wb-sym{font-family:var(--fm);font-size:13px;color:var(--amber);min-width:60px;font-weight:500}
+.wb-row{display:flex;align-items:center;gap:12px;padding:6px 10px;background:rgba(15,47,88,0.4);border-radius:var(--r4)}
+.wb-sym{font-family:var(--fm);font-size:13px;color:var(--lightning);min-width:65px;font-weight:500}
 .wb-desc{font-size:12px;color:var(--t2)}
 
-/* ── SCROLLBAR ──────────────────────────── */
+/* ── WEATHER ICON STRIP ── */
+.wx-strip{
+  display:flex;gap:6px;overflow-x:auto;
+  padding:10px 0 8px;scrollbar-width:none;
+  margin-bottom:10px;
+  position:sticky;top:90px;z-index:100;
+  background:linear-gradient(180deg,var(--sky-mid) 80%,transparent);
+  padding-bottom:10px;
+}
+.wx-strip::-webkit-scrollbar{display:none}
+.wx-icon-btn{
+  flex-shrink:0;
+  background:linear-gradient(135deg,rgba(15,47,88,0.7),rgba(11,37,69,0.5));
+  border:1px solid var(--line2);border-radius:var(--r3);
+  padding:11px 15px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  transition:.15s;min-width:78px;
+}
+.wx-icon-btn:hover{border-color:rgba(100,180,255,0.35);transform:translateY(-1px)}
+.wx-icon-btn.on{
+  background:linear-gradient(135deg,rgba(0,229,160,0.15),rgba(100,180,255,0.1));
+  border-color:var(--radar);
+  box-shadow:0 4px 20px rgba(0,229,160,0.12);
+}
+.wx-icon-btn .icon{font-size:24px;line-height:1}
+.wx-icon-btn .label{font-size:10.5px;color:var(--t3);font-family:var(--fm);text-align:center;letter-spacing:.3px}
+.wx-icon-btn.on .label{color:var(--radar)}
+
+/* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--rim);border-radius:4px}
+::-webkit-scrollbar-thumb{background:var(--sky-rim);border-radius:4px}
 
-
+/* ── RESPONSIVE ── */
+@media(min-width:600px){
+  body{font-size:18px}
+  .sec-title{font-size:24px}
+  .tbl{font-size:13px}
+  .tbl th{font-size:10.5px}
+  .sh{font-size:12px}
+  .item{font-size:14px}
+  .sb{font-size:13px}
+  .mc-t{font-size:13px}
+  .mc-d{font-size:12px}
+}
+@media(max-width:380px){
+  body{font-size:15px}
+  .sec-title{font-size:17px}
+  .tbl{font-size:11px}
+  .tbl th{font-size:9px}
+}
 </style>
 </head>
 <body>
+<div class="sky-bg"></div>
+<div class="app">
 
-<!-- HEADER -->
+<!-- ══ HEADER ══ -->
 <header class="hdr">
-  <div class="hdr-top">
-    <div class="hdr-badge">✈ MET HANDBOOK</div>
-    <h1>Aviation Meteorology<br><em>Dispatcher & Pilot Reference</em></h1>
+  <div class="hdr-inner">
+    <div class="hdr-row">
+      <div class="hdr-icon">🌤</div>
+      <div class="hdr-text">
+        <div class="hdr-eyebrow">Aviation Met Handbook</div>
+        <div class="hdr-title">Aviation Meteorology<br><em>Dispatcher · Met Officer · Pilot</em></div>
+      </div>
+    </div>
+    <div class="hdr-chips">
+      <span class="chip">ICAO Annex 3</span>
+      <span class="chip">Doc 8896</span>
+      <span class="chip">WMO No.49</span>
+      <span class="chip">Thai AERO MET</span>
+      <span class="chip">17 Chapters</span>
+    </div>
   </div>
-  <div class="hdr-meta">
-    <span class="hm">ICAO Annex 3 · Doc 8896</span>
-    <span class="hm">WMO No.49</span>
-    <span class="hm">Thai AERO MET Division</span>
-    <span class="hm">Mobile Ready</span>
-  </div>
-
 </header>
 
-<!-- BOTTOM NAV (mobile) -->
-<nav class="bnav" id="bnav"></nav>
+<!-- ══ BOTTOM TAB BAR ══ -->
+<nav class="tab-bar" id="bnav"></nav>
 
-<div class="layout">
-<nav class="sidebar">
-  <div class="snav-hd">17 Chapters</div>
-  <div id="snav"></div>
-</nav>
-<main class="main" id="main">
+<!-- ══ BODY ══ -->
+<div class="body-wrap">
 
-<!-- PRIORITY CARD -->
-<div class="pcard" id="home">
-  <div class="pcard-title">// DISPATCH PRIORITY ORDER</div>
-  <div class="pri"><div class="pri-n p1">01</div><div><div class="pri-t">METAR / TAF</div><div class="pri-s">อ่านก่อนทุกเที่ยว · Dep – Dest – Alternate</div></div></div>
-  <div class="pri"><div class="pri-n p1">02</div><div><div class="pri-t">SIGWX Chart</div><div class="pri-s">ภาพรวมสภาพอากาศตลอดเส้นทาง</div></div></div>
-  <div class="pri"><div class="pri-n p1">03</div><div><div class="pri-t">Wind Aloft / Upper Wind</div><div class="pri-s">Fuel · Optimum Level · ETA</div></div></div>
-  <div class="pri"><div class="pri-n p2">04</div><div><div class="pri-t">SIGMET</div><div class="pri-s">Monitor ตลอด Flight Watch</div></div></div>
-  <div class="pri"><div class="pri-n p2">05</div><div><div class="pri-t">Thunderstorm / CB Analysis</div><div class="pri-s">Route Avoidance · Extra Fuel</div></div></div>
-  <div class="pri"><div class="pri-n p2">06</div><div><div class="pri-t">Typhoon Monitoring</div><div class="pri-s">JTWC Track · Reroute · Extra Fuel</div></div></div>
-  <div class="pri"><div class="pri-n p3">07</div><div><div class="pri-t">Alternate Weather</div><div class="pri-s">TAF ดีกว่า Alt Minima ณ ETA</div></div></div>
-  <div class="pri"><div class="pri-n p3">08</div><div><div class="pri-t">Icing</div><div class="pri-s">Freezing Level · MOD–SEV → Fuel impact</div></div></div>
-  <div class="pri"><div class="pri-n p4">09</div><div><div class="pri-t">Turbulence</div><div class="pri-s">CAT · PIREP · SIGMET SEV TURB</div></div></div>
-  <div class="pri"><div class="pri-n p5">10</div><div><div class="pri-t">Front Analysis</div><div class="pri-s">Synoptic Situation Overview</div></div></div>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-hd">// 17 Chapters</div>
+    <div id="snav"></div>
+  </nav>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- Weather icon strip — always visible -->
+    <div class="wx-strip" id="wx-strip"></div>
+
+    <!-- Priority dashboard (home) -->
+    <div id="home">
+
+      <!-- Priority grid -->
+      <div class="dash-hero">
+        <div class="dash-label">// Dispatch Priority Reference</div>
+        <div class="priority-grid" id="pri-grid">
+          <div class="pri-card" onclick="activateByTitle('Aviation Weather Reports')">
+            <div class="pri-rank r1">1</div><div class="pri-info"><div class="pri-t">METAR / TAF</div><div class="pri-s">Dep · Dest · Alternate</div></div>
+          </div>
+          <div class="pri-card" onclick="activateByTitle('SIGWX Charts')">
+            <div class="pri-rank r1">2</div><div class="pri-info"><div class="pri-t">SIGWX Chart</div><div class="pri-s">ภาพรวมตลอดเส้นทาง</div></div>
+          </div>
+          <div class="pri-card" onclick="activateByTitle('Upper Wind Analysis')">
+            <div class="pri-rank r1">3</div><div class="pri-info"><div class="pri-t">Wind Aloft</div><div class="pri-s">Fuel · Level · ETA</div></div>
+          </div>
+          <div class="pri-card" onclick="activateByTitle('SIGMET & AIRMET')">
+            <div class="pri-rank r2">4</div><div class="pri-info"><div class="pri-t">SIGMET</div><div class="pri-s">Monitor ตลอด Flight</div></div>
+          </div>
+          <div class="pri-card" onclick="activateByTitle('Thunderstorm')">
+            <div class="pri-rank r2">5</div><div class="pri-info"><div class="pri-t">CB / Thunderstorm</div><div class="pri-s">Route · Extra Fuel</div></div>
+          </div>
+          <div class="pri-card" onclick="activateByTitle('Tropical Weather')">
+            <div class="pri-rank r2">6</div><div class="pri-info"><div class="pri-t">Typhoon</div><div class="pri-s">Track · Reroute · Fuel</div></div>
+          </div>
+          <div class="pri-card" onclick="activateByTitle('Weather Minima for Dispatch')">
+            <div class="pri-rank r3">7</div><div class="pri-info"><div class="pri-t">Alternate Weather</div><div class="pri-s">Alt Minima ณ ETA</div></div>
+          </div>
+          <div class="pri-card" onclick="activateByTitle('Icing')">
+            <div class="pri-rank r3">8</div><div class="pri-info"><div class="pri-t">Icing</div><div class="pri-s">Freezing Level · Fuel</div></div>
+          </div>
+          <div class="pri-card" onclick="activateByTitle('Turbulence')">
+            <div class="pri-rank r4">9</div><div class="pri-info"><div class="pri-t">Turbulence</div><div class="pri-s">CAT · PIREP · SIGMET</div></div>
+          </div>
+          <div class="pri-card" onclick="activateByTitle('Fronts & Air Mass')">
+            <div class="pri-rank r5">10</div><div class="pri-info"><div class="pri-t">Front Analysis</div><div class="pri-s">Synoptic Overview</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="secs"></div>
+  </div>
 </div>
-
-<div id="secs"></div>
-
-</main>
 </div>
 
 <script>
@@ -1488,8 +1647,88 @@ function buildAll() {
     secs.appendChild(sec);
   });
 }
+const WX_ICONS = [
+  {icon:'⛅',label:'Basic Met',title:'พื้นฐานอุตุนิยมวิทยา'},
+  {icon:'💨',label:'Wind',title:'ลม (Wind)'},
+  {icon:'☁️',label:'Cloud',title:'เมฆ (Cloud)'},
+  {icon:'🌫',label:'Fog/Vis',title:'Visibility & Fog'},
+  {icon:'⛈',label:'Thunderstorm',title:'Thunderstorm'},
+  {icon:'〰️',label:'Turbulence',title:'Turbulence'},
+  {icon:'🧊',label:'Icing',title:'Icing'},
+  {icon:'↔️',label:'Fronts',title:'Fronts & Air Mass'},
+  {icon:'🌀',label:'Tropical',title:'Tropical Weather'},
+  {icon:'🌬',label:'Upper Wind',title:'Upper Wind Analysis'},
+  {icon:'📋',label:'METAR/TAF',title:'Aviation Weather Reports'},
+  {icon:'🗺',label:'SIGWX',title:'SIGWX Charts'},
+  {icon:'🚨',label:'SIGMET',title:'SIGMET & AIRMET'},
+  {icon:'🌋',label:'Volcanic',title:'Volcanic Ash'},
+  {icon:'📐',label:'Minima',title:'Weather Minima for Dispatch'},
+  {icon:'⭕',label:'Isobar',title:'Isobar & ระบบความกดอากาศ'},
+  {icon:'🔣',label:'Symbols',title:'SIGWX Symbols & Weather Codes'},
+];
+
+function activate(idx){
+  document.querySelectorAll('.sec').forEach(function(s,i){s.classList.toggle('on',i===idx);});
+  document.querySelectorAll('.snav-btn').forEach(function(b,i){b.classList.toggle('on',i===idx);});
+  document.querySelectorAll('.tab-pill').forEach(function(b,i){b.classList.toggle('on',i===idx);});
+  document.querySelectorAll('.wx-icon-btn').forEach(function(b,i){b.classList.toggle('on',i===idx);});
+  var home = document.getElementById('home');
+  if(home) home.style.display = 'none';
+  var pills = document.querySelectorAll('.tab-pill');
+  if(pills[idx]) pills[idx].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function activateByTitle(title){
+  var idx = chapters.findIndex(function(c){return c.title===title;});
+  if(idx>=0) activate(idx);
+}
+
+function buildAll(){
+  var snav  = document.getElementById('snav');
+  var bnav  = document.getElementById('bnav');
+  var secs  = document.getElementById('secs');
+  var strip = document.getElementById('wx-strip');
+
+  chapters.forEach(function(ch,i){
+    var wx = WX_ICONS[i] || {icon:'📄',label:ch.num};
+
+    // Weather icon strip
+    var wb = document.createElement('button');
+    wb.className = 'wx-icon-btn';
+    wb.innerHTML = '<span class="icon">'+wx.icon+'</span><span class="label">'+wx.label+'</span>';
+    wb.onclick = (function(idx){return function(){activate(idx);};})(i);
+    strip.appendChild(wb);
+
+    // Sidebar
+    var sb = document.createElement('button');
+    sb.className = 'snav-btn'+(i===0?' on':'');
+    sb.innerHTML = '<span class="snav-num">'+ch.num+'</span><span>'+ch.title+'</span>';
+    sb.onclick = (function(idx){return function(){activate(idx);};})(i);
+    snav.appendChild(sb);
+
+    // Bottom tab
+    var bb = document.createElement('button');
+    bb.className = 'tab-pill'+(i===0?' on':'');
+    bb.textContent = wx.icon+' '+ch.num;
+    bb.title = ch.title;
+    bb.onclick = (function(idx){return function(){activate(idx);};})(i);
+    bnav.appendChild(bb);
+
+    // Section
+    var sec = document.createElement('div');
+    sec.className = 'sec'+(i===0?' on':'');
+    sec.id = 'sec'+i;
+    sec.innerHTML =
+      '<div class="sec-hdr">'+
+        '<div class="sec-badge">'+wx.icon+' Chapter '+ch.num+'</div>'+
+        '<div class="sec-title">'+ch.title+'</div>'+
+        '<div class="sec-desc">'+ch.desc+'</div>'+
+      '</div>'+ch.html;
+    secs.appendChild(sec);
+  });
+}
 buildAll();
 </script>
-
 </body>
 </html>
